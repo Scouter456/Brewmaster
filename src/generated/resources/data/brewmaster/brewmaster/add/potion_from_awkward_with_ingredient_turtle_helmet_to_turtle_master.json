@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:awkward",
+  "ingredient": {
+    "item": "minecraft:turtle_helmet"
+  },
+  "output_potion": "minecraft:turtle_master",
+  "type": "brewmaster:add_potion_mix"
+}

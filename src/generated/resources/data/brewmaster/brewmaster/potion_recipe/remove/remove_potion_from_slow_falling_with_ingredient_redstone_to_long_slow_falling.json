@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:slow_falling",
+    "ingredient": "minecraft:redstone",
+    "output_potion": "minecraft:long_slow_falling"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

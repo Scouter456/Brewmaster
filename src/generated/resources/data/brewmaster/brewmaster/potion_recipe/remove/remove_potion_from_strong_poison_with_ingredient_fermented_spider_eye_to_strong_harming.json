@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:strong_poison",
+    "ingredient": "minecraft:fermented_spider_eye",
+    "output_potion": "minecraft:strong_harming"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

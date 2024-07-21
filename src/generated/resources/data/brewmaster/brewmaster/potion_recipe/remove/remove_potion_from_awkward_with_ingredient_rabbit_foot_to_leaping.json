@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:rabbit_foot",
+    "output_potion": "minecraft:leaping"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:leaping",
+  "ingredient": {
+    "item": "minecraft:fermented_spider_eye"
+  },
+  "output_potion": "minecraft:slowness",
+  "type": "brewmaster:add_potion_mix"
+}

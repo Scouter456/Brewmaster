@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.scouter.brewmaster.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "brewmaster.refmap.json",
+  "mixins": [
+    "PotionBrewingMixin",
+    "access.PotionBrewingAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

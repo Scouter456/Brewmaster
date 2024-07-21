@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:awkward",
+  "ingredient": {
+    "item": "minecraft:blaze_powder"
+  },
+  "output_potion": "minecraft:strength",
+  "type": "brewmaster:add_potion_mix"
+}

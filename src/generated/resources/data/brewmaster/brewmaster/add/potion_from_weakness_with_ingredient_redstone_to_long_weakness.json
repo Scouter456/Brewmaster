@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:weakness",
+  "ingredient": {
+    "item": "minecraft:redstone"
+  },
+  "output_potion": "minecraft:long_weakness",
+  "type": "brewmaster:add_potion_mix"
+}

@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:water",
+    "ingredient": "minecraft:nether_wart",
+    "output_potion": "minecraft:awkward"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

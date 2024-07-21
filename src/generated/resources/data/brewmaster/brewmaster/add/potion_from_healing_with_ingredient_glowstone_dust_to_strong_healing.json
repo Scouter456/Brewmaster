@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:healing",
+  "ingredient": {
+    "item": "minecraft:glowstone_dust"
+  },
+  "output_potion": "minecraft:strong_healing",
+  "type": "brewmaster:add_potion_mix"
+}

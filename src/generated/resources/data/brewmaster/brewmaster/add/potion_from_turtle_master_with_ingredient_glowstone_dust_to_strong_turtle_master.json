@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:turtle_master",
+  "ingredient": {
+    "item": "minecraft:glowstone_dust"
+  },
+  "output_potion": "minecraft:strong_turtle_master",
+  "type": "brewmaster:add_potion_mix"
+}

@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:night_vision",
+  "ingredient": {
+    "item": "minecraft:fermented_spider_eye"
+  },
+  "output_potion": "minecraft:invisibility",
+  "type": "brewmaster:add_potion_mix"
+}
