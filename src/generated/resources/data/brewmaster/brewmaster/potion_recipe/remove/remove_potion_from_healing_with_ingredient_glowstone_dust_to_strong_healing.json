@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:healing",
-    "ingredient": "minecraft:glowstone_dust",
-    "output_potion": "minecraft:strong_healing"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

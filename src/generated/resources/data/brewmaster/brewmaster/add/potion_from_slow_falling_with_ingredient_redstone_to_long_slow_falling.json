@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:slow_falling",
-  "ingredient": {
-    "item": "minecraft:redstone"
-  },
-  "output_potion": "minecraft:long_slow_falling",
-  "type": "brewmaster:add_potion_mix"
-}

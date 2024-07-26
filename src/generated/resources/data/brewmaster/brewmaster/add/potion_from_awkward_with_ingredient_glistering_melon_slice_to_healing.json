@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:awkward",
-  "ingredient": {
-    "item": "minecraft:glistering_melon_slice"
-  },
-  "output_potion": "minecraft:healing",
-  "type": "brewmaster:add_potion_mix"
-}

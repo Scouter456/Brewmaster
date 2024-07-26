@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:turtle_master",
-    "ingredient": "minecraft:glowstone_dust",
-    "output_potion": "minecraft:strong_turtle_master"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

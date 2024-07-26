@@ -26,35 +26,31 @@ public class PotionBrewingS2C implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<PotionBrewingS2C> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Brewmaster.MODID, "potion_brewing_s2c"));
 
-    private final List<OldRecipe> potionMixes;
-    private final List<OldContainerRecipe> containerRecipes;
-    //private final List<PotionBrewing.Mix<Item>> mixes;
-    private final  List<Ingredient> containers;
+    private final List<PotionBrewing.Mix<Potion>> potionMixes;
+
+    private final List<PotionBrewing.Mix<Item>> mixes;
+    private final List<Ingredient> containers;
     public static final StreamCodec<RegistryFriendlyByteBuf, PotionBrewingS2C> STREAM_CODEC = StreamCodec.composite(
-            OldRecipe.STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getPotionMixes,
-            OldContainerRecipe.STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getContainerRecipes,
-            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()),PotionBrewingS2C::getContainers,
-            //PotionUtil.ITEM_BREWING_MIX_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getMixes,
+            PotionUtil.POTION_BREWING_MIX_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getPotionMixes,
+            PotionUtil.ITEM_BREWING_MIX_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getMixes,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getContainers,
             PotionBrewingS2C::new
     );
 
-    public PotionBrewingS2C(List<OldRecipe> potionMixes, List<OldContainerRecipe> containerRecipes, List<Ingredient> containers) {
+    public PotionBrewingS2C(List<PotionBrewing.Mix<Potion>> potionMixes, List<PotionBrewing.Mix<Item>> containerRecipes, List<Ingredient> containers) {
         this.potionMixes = potionMixes;
-        this.containerRecipes = containerRecipes;
+        this.mixes = containerRecipes;
         this.containers = containers;
         //this.mixes = mixes;
     }
 
-    //public List<PotionBrewing.Mix<Item>> getMixes() {
-    //    return mixes;
-    //}
 
-    public List<OldRecipe> getPotionMixes() {
+    public List<PotionBrewing.Mix<Potion>> getPotionMixes() {
         return potionMixes;
     }
 
-    public List<OldContainerRecipe> getContainerRecipes() {
-        return containerRecipes;
+    public List<PotionBrewing.Mix<Item>> getMixes() {
+        return mixes;
     }
 
     public List<Ingredient> getContainers() {
@@ -70,21 +66,12 @@ public class PotionBrewingS2C implements CustomPacketPayload {
         ClientLevel clientLevel = (ClientLevel) level;
         if (level == null || clientLevel == null) return;
         PotionBrewing potionBrewing = clientLevel.potionBrewing();
-
-        List<PotionBrewing.Mix<Potion>> mixes = new ArrayList<>();
-        List<PotionBrewing.Mix<Item>> container = new ArrayList<>();
-        for(OldRecipe oldRecipes : potionMixes) {
-            mixes.add(oldRecipes.toMix());
-        }
-        for(OldContainerRecipe oldRecipes : containerRecipes) {
-            container.add(oldRecipes.toMix());
-        }
-
-        ((PotionBrewingRecipeExtension) potionBrewing).setPotionMixes(List.copyOf(mixes));
-        ((PotionBrewingRecipeExtension) potionBrewing).setMixes(List.copyOf(container));
+        ((PotionBrewingRecipeExtension) potionBrewing).setPotionMixes(List.copyOf(potionMixes));
+        ((PotionBrewingRecipeExtension) potionBrewing).setMixes(List.copyOf(mixes));
         ((PotionBrewingRecipeExtension) potionBrewing).setContainer(List.copyOf(containers));
         //((PotionBrewingRecipeExtension)potionBrewing).setMixes(List.copyOf(mixes));    }
     }
+
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;

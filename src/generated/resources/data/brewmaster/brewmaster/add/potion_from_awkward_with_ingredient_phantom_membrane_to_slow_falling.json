@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:awkward",
-  "ingredient": {
-    "item": "minecraft:phantom_membrane"
-  },
-  "output_potion": "minecraft:slow_falling",
-  "type": "brewmaster:add_potion_mix"
-}

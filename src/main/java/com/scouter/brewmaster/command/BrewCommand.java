@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -14,13 +15,18 @@ import com.scouter.brewmaster.data.OldRecipe;
 import com.scouter.brewmaster.data.PotionBrewingRecipe;
 import com.scouter.brewmaster.data.RemovePotionMixRecipe;
 import com.scouter.brewmaster.mixin.access.PotionBrewingAccessor;
+import com.scouter.brewmaster.util.PotionFileHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
@@ -33,101 +39,69 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class BrewCommand {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_TYPE = (ctx, builder) -> {
+        return SharedSuggestionProvider.suggest(PotionBrewingRecipesToShow.getRegisteredPotions(), builder);
+    };
 
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> builder = Commands.literal("brews")
-                .requires(s -> s.hasPermission(2));
+                .requires(s -> s.hasPermission(0));
 
         LiteralArgumentBuilder<CommandSourceStack> createBuilder = Commands.literal("create")
                 .then(Commands.literal("create_potion_mix_files")
-                        .executes(BrewCommand::createPotionFiles))
+                        .executes(PotionFileHandler::createPotionFiles))
                 .then(Commands.literal("remove_potion_mix_files")
-                        .executes(BrewCommand::removePotionFiles));
+                        .executes(PotionFileHandler::removePotionFiles))
+                .then(Commands.literal("replace_potion_mix_files")
+                        .executes(PotionFileHandler::replacePotionFiles))
+                .then(Commands.literal("create_container_files")
+                        .executes(PotionFileHandler::createContainerFiles))
+                .then(Commands.literal("remove_container_files")
+                        .executes(PotionFileHandler::removeContainerFiles))
+                .then(Commands.literal("replace_container_files")
+                        .executes(PotionFileHandler::replaceContainerFiles))
+                .then(Commands.literal("create_container_mix_files")
+                        .executes(PotionFileHandler::createContainerMixFiles))
+                .then(Commands.literal("remove_container_mix_files")
+                        .executes(PotionFileHandler::removeContainerMixFiles))
+                .then(Commands.literal("replace_container_mix_files")
+                        .executes(PotionFileHandler::replaceContainerMixFiles))
+                .requires(s -> s.hasPermission(2));
+
+        LiteralArgumentBuilder<CommandSourceStack> showBuilder = Commands.literal("show")
+                .then(Commands.argument("recipe", ResourceLocationArgument.id()).suggests(SUGGEST_TYPE)
+                        .executes(context -> showRecipe(context, ResourceLocationArgument.getId(context, "recipe"))))
+                .requires(s -> s.hasPermission(0));
+
 
         builder.then(createBuilder);
+        builder.then(showBuilder);
 
         pDispatcher.register(builder);
     }
 
-    public static int createPotionFiles(CommandContext<CommandSourceStack> c) {
-        int updatedFile = 0;
+    public static int showRecipe(CommandContext<CommandSourceStack> c, ResourceLocation location) {
         Entity nullableSummoner = c.getSource().getEntity();
         ServerLevel level = c.getSource().getLevel();
-        Path PATH = FMLPaths.GAMEDIR.get().resolve("potion_files");
-        try {
-            List<PotionBrewing.Mix<Potion>> potMix = ((PotionBrewingAccessor)level.potionBrewing()).brewmaster$getPotionMixes();
-
-            try {
-                Files.createDirectories(PATH); // Create the directory if it doesn't exist
-            } catch (IOException e) {
-                LOGGER.error("Error creating directory: ", e);
+        Path PATH = FMLPaths.GAMEDIR.get().resolve("brewmaster/potion_files");
+        Optional<Holder.Reference<Potion>> reference = BuiltInRegistries.POTION.getHolder(location);
+        if(nullableSummoner instanceof ServerPlayer player) {
+            if (!reference.isPresent()) {
+                player.sendSystemMessage(Component.literal("Potion not available!").withStyle(ChatFormatting.RED));
+                return 0;
+            } else {
+                Holder<Potion> potionHolder = reference.get().getDelegate();
+                PotionBrewingRecipesToShow.printMessageForPotion(player, potionHolder);
             }
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            for(PotionBrewing.Mix<Potion> potionMix : potMix) {
-                    AddPotionMixRecipe recipe = new AddPotionMixRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to());
-
-                    DataResult<JsonElement> jsonElement = PotionBrewingRecipe.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, recipe);
-                    ResourceLocation key = BuiltInRegistries.ITEM.getKey(potionMix.ingredient().getItems()[0].getItem());
-                    try (FileWriter writer = new FileWriter(PATH + "/" + "potion_from_" + potionMix.from().getRegisteredName().split(":")[1]+ "_with_ingredient_" + key.getPath() + "_to_" + potionMix.to().getRegisteredName().split(":")[1] + ".json")) {
-                        gson.toJson(jsonElement.getOrThrow(), writer);
-                        updatedFile += 1;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-            }
-        } catch (Exception ex) {
-            c.getSource().sendFailure(Component.literal("Exception thrown - see log"));
-            ex.printStackTrace();
-        }
-        if(nullableSummoner instanceof Player player){
-            player.sendSystemMessage(Component.literal("A new directory has been created at: " + PATH).withStyle(ChatFormatting.GREEN));
-            player.sendSystemMessage(Component.literal("Updated " + updatedFile + " files").withStyle(ChatFormatting.GREEN));
-
         }
         return 0;
     }
 
-    public static int removePotionFiles(CommandContext<CommandSourceStack> c) {
-        int updatedFile = 0;
-        Entity nullableSummoner = c.getSource().getEntity();
-        ServerLevel level = c.getSource().getLevel();
-        Path PATH = FMLPaths.GAMEDIR.get().resolve("remove_potion_files");
-        try {
-            List<PotionBrewing.Mix<Potion>> potMix = ((PotionBrewingAccessor)level.potionBrewing()).brewmaster$getPotionMixes();
 
-            try {
-                Files.createDirectories(PATH); // Create the directory if it doesn't exist
-            } catch (IOException e) {
-                LOGGER.error("Error creating directory: ", e);
-            }
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            for(PotionBrewing.Mix<Potion> potionMix : potMix) {
-                RemovePotionMixRecipe recipe = new RemovePotionMixRecipe(new OldRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()));
-
-                DataResult<JsonElement> jsonElement = PotionBrewingRecipe.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, recipe);
-                ResourceLocation key = BuiltInRegistries.ITEM.getKey(potionMix.ingredient().getItems()[0].getItem());
-                try (FileWriter writer = new FileWriter(PATH + "/" + "remove_potion_from_" + potionMix.from().getRegisteredName().split(":")[1]+ "_with_ingredient_" + key.getPath() + "_to_" + potionMix.to().getRegisteredName().split(":")[1] + ".json")) {
-                    gson.toJson(jsonElement.getOrThrow(), writer);
-                    updatedFile += 1;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception ex) {
-            c.getSource().sendFailure(Component.literal("Exception thrown - see log"));
-            ex.printStackTrace();
-        }
-        if(nullableSummoner instanceof Player player){
-            player.sendSystemMessage(Component.literal("A new directory has been created at: " + PATH).withStyle(ChatFormatting.GREEN));
-            player.sendSystemMessage(Component.literal("Updated " + updatedFile + " files").withStyle(ChatFormatting.GREEN));
-
-        }
-        return 0;
-    }
 }

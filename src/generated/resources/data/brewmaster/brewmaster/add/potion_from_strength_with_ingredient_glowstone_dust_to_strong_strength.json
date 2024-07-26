@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:strength",
-  "ingredient": {
-    "item": "minecraft:glowstone_dust"
-  },
-  "output_potion": "minecraft:strong_strength",
-  "type": "brewmaster:add_potion_mix"
-}

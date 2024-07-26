@@ -56,6 +56,15 @@ public class AddContainerMixRecipe implements PotionBrewingRecipe{
     private final Holder<Item> result;
     private final Either<Item, TagKey<Item>> either;
 
+
+    public AddContainerMixRecipe(Holder<Item> input, Item item, Holder<Item> result) {
+        this.item = item;
+        this.itemTagKey = null;
+        this.input = input;
+        this.result = result;
+        this.either = null;
+    }
+
     public AddContainerMixRecipe(Holder<Item> input, Either<Item, TagKey<Item>> either, Holder<Item> result) {
         this.item = either.left().orElse(null);
         this.itemTagKey = either.right().orElse(null);

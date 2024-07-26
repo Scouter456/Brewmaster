@@ -50,6 +50,13 @@ public class AddContainerRecipe implements PotionBrewingRecipe{
     private final TagKey<Item> itemTagKey;
     private final Either<Item, TagKey<Item>> either;
 
+
+    public AddContainerRecipe(Ingredient ingredient) {
+        this.item = ingredient.getItems()[0].getItem();
+        this.itemTagKey = null;
+        this.either = null;
+    }
+
     public AddContainerRecipe(TagKey<Item> tagKey) {
         this.item = null;
         this.itemTagKey =tagKey;

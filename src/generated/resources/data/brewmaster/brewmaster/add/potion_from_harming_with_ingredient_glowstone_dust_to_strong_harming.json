@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:harming",
-  "ingredient": {
-    "item": "minecraft:glowstone_dust"
-  },
-  "output_potion": "minecraft:strong_harming",
-  "type": "brewmaster:add_potion_mix"
-}

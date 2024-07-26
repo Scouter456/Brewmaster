@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:regeneration",
-  "ingredient": {
-    "item": "minecraft:redstone"
-  },
-  "output_potion": "minecraft:long_regeneration",
-  "type": "brewmaster:add_potion_mix"
-}

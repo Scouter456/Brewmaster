@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:water",
-    "ingredient": "minecraft:glowstone_dust",
-    "output_potion": "minecraft:thick"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

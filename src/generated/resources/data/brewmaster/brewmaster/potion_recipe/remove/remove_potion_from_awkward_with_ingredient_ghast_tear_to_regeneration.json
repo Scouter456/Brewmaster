@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:awkward",
-    "ingredient": "minecraft:ghast_tear",
-    "output_potion": "minecraft:regeneration"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

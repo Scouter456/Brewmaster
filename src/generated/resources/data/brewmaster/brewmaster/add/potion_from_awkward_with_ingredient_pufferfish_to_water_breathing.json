@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:awkward",
-  "ingredient": {
-    "item": "minecraft:pufferfish"
-  },
-  "output_potion": "minecraft:water_breathing",
-  "type": "brewmaster:add_potion_mix"
-}

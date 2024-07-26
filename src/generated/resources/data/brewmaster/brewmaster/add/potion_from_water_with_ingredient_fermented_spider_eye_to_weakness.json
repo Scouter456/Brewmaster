@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:water",
-  "ingredient": {
-    "item": "minecraft:fermented_spider_eye"
-  },
-  "output_potion": "minecraft:weakness",
-  "type": "brewmaster:add_potion_mix"
-}

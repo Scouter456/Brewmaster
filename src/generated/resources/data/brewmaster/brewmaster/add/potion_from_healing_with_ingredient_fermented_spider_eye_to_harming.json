@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:healing",
-  "ingredient": {
-    "item": "minecraft:fermented_spider_eye"
-  },
-  "output_potion": "minecraft:harming",
-  "type": "brewmaster:add_potion_mix"
-}

@@ -46,6 +46,10 @@ public class RemoveContainerRecipe implements PotionBrewingRecipe {
 
     private final Item item;
 
+    public RemoveContainerRecipe(Ingredient ingredient) {
+        this.item = ingredient.getItems()[0].getItem();
+    }
+
     public RemoveContainerRecipe(Item item) {
         this.item = item;
     }

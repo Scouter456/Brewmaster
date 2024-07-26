@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:long_leaping",
-    "ingredient": "minecraft:fermented_spider_eye",
-    "output_potion": "minecraft:long_slowness"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}
