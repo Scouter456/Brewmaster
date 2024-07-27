@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:water_breathing",
+    "ingredient": "minecraft:redstone",
+    "output_potion": "minecraft:long_water_breathing"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

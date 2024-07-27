@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_item": "minecraft:splash_potion",
+    "ingredient": "minecraft:dragon_breath",
+    "output_item": "minecraft:lingering_potion"
+  },
+  "type": "brewmaster:remove_container_mix"
+}

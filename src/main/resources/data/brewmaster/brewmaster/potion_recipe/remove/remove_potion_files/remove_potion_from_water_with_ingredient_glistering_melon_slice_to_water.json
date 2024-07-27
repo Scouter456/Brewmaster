@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:water",
+    "ingredient": "minecraft:glistering_melon_slice",
+    "output_potion": "minecraft:mundane"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

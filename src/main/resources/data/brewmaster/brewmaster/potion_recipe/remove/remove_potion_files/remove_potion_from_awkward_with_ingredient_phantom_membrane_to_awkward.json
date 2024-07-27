@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:phantom_membrane",
+    "output_potion": "minecraft:slow_falling"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

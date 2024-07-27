@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:water",
+  "ingredient": {
+    "item": "minecraft:glowstone_dust"
+  },
+  "output_potion": "minecraft:thick",
+  "type": "brewmaster:add_potion_mix"
+}

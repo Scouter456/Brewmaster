@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:leaping",
+  "ingredient": {
+    "item": "minecraft:glowstone_dust"
+  },
+  "output_potion": "minecraft:strong_leaping",
+  "type": "brewmaster:add_potion_mix"
+}

@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:pufferfish",
+    "output_potion": "minecraft:water_breathing"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

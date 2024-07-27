@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:water",
+  "ingredient": {
+    "item": "minecraft:magma_cream"
+  },
+  "output_potion": "minecraft:mundane",
+  "type": "brewmaster:add_potion_mix"
+}

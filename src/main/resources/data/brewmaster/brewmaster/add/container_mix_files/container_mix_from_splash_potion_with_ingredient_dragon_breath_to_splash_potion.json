@@ -1,0 +1,8 @@
+{
+  "input_item": "minecraft:splash_potion",
+  "ingredient": {
+    "item": "minecraft:dragon_breath"
+  },
+  "output_item": "minecraft:lingering_potion",
+  "type": "brewmaster:add_container_mix"
+}

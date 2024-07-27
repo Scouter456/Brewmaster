@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:fire_resistance",
+    "ingredient": "minecraft:redstone",
+    "output_potion": "minecraft:long_fire_resistance"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}
