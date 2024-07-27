@@ -4,10 +4,7 @@ import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.data.*;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Consumer;
 

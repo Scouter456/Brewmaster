@@ -19,7 +19,7 @@ public class DataGenerators {
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        //generator.addProvider(event.includeServer(), new EntityTagGenerator(packOutput, lookupProvider, existingFileHelper));
+        //generator.addProvider(event.includeServer(), new WikiPageGenerator(packOutput));
        // generator.addProvider(event.includeServer(), new PotionRecipeDataGenerator(packOutput));
         //BlockTagsGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
         //        new BlockTagsGenerator(packOutput, lookupProvider, existingFileHelper));

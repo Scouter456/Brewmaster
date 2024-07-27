@@ -6,18 +6,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PotionBrewingRecipesToShow {
@@ -27,6 +22,8 @@ public class PotionBrewingRecipesToShow {
     public static Map<Holder<Potion>,List<PotionBrewing.Mix<Potion>>> potions = new HashMap<>();
 
     public static void setPotions(List<PotionBrewing.Mix<Potion>> potionsList) {
+        potions.clear();
+        holders.clear();
         for(PotionBrewing.Mix<Potion> mix : potionsList) {
             holders.add(mix.to());
             List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to(), potionHolder -> new ArrayList<>());

@@ -1,6 +1,5 @@
 package com.scouter.brewmaster.events;
 
-import com.mojang.logging.LogUtils;
 import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.command.PotionBrewingRecipesToShow;
 import com.scouter.brewmaster.data.PotionBrewingRecipe;
@@ -19,12 +18,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = Brewmaster.MODID, bus = EventBusSubscriber.Bus.GAME)

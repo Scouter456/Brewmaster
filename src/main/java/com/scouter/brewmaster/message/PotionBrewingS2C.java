@@ -1,8 +1,6 @@
 package com.scouter.brewmaster.message;
 
 import com.scouter.brewmaster.Brewmaster;
-import com.scouter.brewmaster.data.OldContainerRecipe;
-import com.scouter.brewmaster.data.OldRecipe;
 import com.scouter.brewmaster.events.PotionBrewingRecipeExtension;
 import com.scouter.brewmaster.util.ClientUtils;
 import com.scouter.brewmaster.util.PotionUtil;
@@ -19,7 +17,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PotionBrewingS2C implements CustomPacketPayload {
