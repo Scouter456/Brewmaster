@@ -18,11 +18,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.slf4j.Logger;
 
 import java.io.FileWriter;
@@ -40,7 +39,7 @@ public class PotionFileHandler {
                 context,
                 "brewmaster/potion_files",
                 PotionFileHandler::createPotionFileName,
-                potionMix -> new AddPotionMixRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to())
+                potionMix -> new AddPotionMixRecipe(potionMix.from.value(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.value())
         );
     }
 
@@ -49,7 +48,7 @@ public class PotionFileHandler {
                 context,
                 "brewmaster/remove_potion_files",
                 PotionFileHandler::removePotionFileName,
-                potionMix -> new RemovePotionMixRecipe(new OldRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()))
+                potionMix -> new RemovePotionMixRecipe(new OldRecipe(potionMix.from.get(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get()))
         );
     }
 
@@ -58,7 +57,7 @@ public class PotionFileHandler {
                 context,
                 "brewmaster/replace_potion_files",
                 PotionFileHandler::replacePotionFileName,
-                potionMix -> new ReplacePotionMixRecipe(new OldRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()),new AddPotionMixRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()))
+                potionMix -> new ReplacePotionMixRecipe(new OldRecipe(potionMix.from.get(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get()),new AddPotionMixRecipe(potionMix.from.get(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get()))
         );
     }
 
@@ -94,7 +93,7 @@ public class PotionFileHandler {
                 context,
                 "brewmaster/container_mix_files",
                 PotionFileHandler::createContainerMixFileName,
-                potionMix -> new AddContainerMixRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to())
+                potionMix -> new AddContainerMixRecipe(potionMix.from.get().asItem(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get().asItem())
         );
     }
 
@@ -103,7 +102,7 @@ public class PotionFileHandler {
                 context,
                 "brewmaster/remove_container_mix_files",
                 PotionFileHandler::removeContainerMixFileName,
-                potionMix -> new RemoveContainerMixRecipe(new OldContainerRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()))
+                potionMix -> new RemoveContainerMixRecipe(new OldContainerRecipe(potionMix.from.get().asItem(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get().asItem()))
         );
     }
 
@@ -112,7 +111,7 @@ public class PotionFileHandler {
                 context,
                 "brewmaster/replace_container_mix_files",
                 PotionFileHandler::replaceContainerMixFileName,
-                potionMix -> new ReplaceContainerMixRecipe(new OldContainerRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()), new AddContainerMixRecipe(potionMix.from(), potionMix.ingredient().getItems()[0].getItem(), potionMix.to()))
+                potionMix -> new ReplaceContainerMixRecipe(new OldContainerRecipe(potionMix.from.get().asItem(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get().asItem()), new AddContainerMixRecipe(potionMix.from.get().asItem(), potionMix.ingredient.getItems()[0].getItem(), potionMix.to.get().asItem()))
         );
     }
 
@@ -129,12 +128,19 @@ public class PotionFileHandler {
         Path path = FMLPaths.GAMEDIR.get().resolve(directoryPath);
 
         try {
-            List<PotionBrewing.Mix<Potion>> potionMixes = ((PotionBrewingAccessor) level.potionBrewing()).brewmaster$getPotionMixes();
+            List<PotionBrewing.Mix<Potion>> potionMixes = PotionBrewingAccessor.brewmaster$getPotionMixes();
             createDirectoryIfNotExists(path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
             for (PotionBrewing.Mix<Potion> potionMix : potionMixes) {
-                ResourceLocation key = BuiltInRegistries.ITEM.getKey(potionMix.ingredient().getItems()[0].getItem());
+                if(potionMix.ingredient.getItems().length ==0) {
+                    ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+                    ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+                    LOGGER.error("WTF is this {} ingredient, {} from potion to {} ", potionMix.ingredient, keyFrom, keyTo);
+                    continue;
+                }
+
+                ResourceLocation key = BuiltInRegistries.ITEM.getKey(potionMix.ingredient.getItems()[0].getItem());
                 String fileName = fileNameGenerator.generateFileName(potionMix, key);
                 writePotionMixToFile(gson, path.resolve(fileName), recipeConstructor.constructRecipe(potionMix), updatedFileCount);
             }
@@ -162,7 +168,7 @@ public class PotionFileHandler {
         Path path = FMLPaths.GAMEDIR.get().resolve(directoryPath);
 
         try {
-            List<Ingredient> containers = ((PotionBrewingAccessor) level.potionBrewing()).brewmaster$getContainers();
+            List<Ingredient> containers = PotionBrewingAccessor.brewmaster$getContainers();
             createDirectoryIfNotExists(path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -196,12 +202,12 @@ public class PotionFileHandler {
         Path path = FMLPaths.GAMEDIR.get().resolve(directoryPath);
 
         try {
-            List<PotionBrewing.Mix<Item>> containers = ((PotionBrewingAccessor) level.potionBrewing()).brewmaster$getMixes();
+            List<PotionBrewing.Mix<Item>> containers = PotionBrewingAccessor.brewmaster$getMixes();
             createDirectoryIfNotExists(path);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
             for (PotionBrewing.Mix<Item> mix : containers) {
-                Item item = mix.ingredient().getItems()[0].getItem();
+                Item item = mix.ingredient.getItems()[0].getItem();
                 ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
                 String fileName = fileNameGenerator.generateFileName(mix,key);
                 writePotionMixToFile(gson, path.resolve(fileName), recipeConstructor.constructRecipe(mix), updatedFileCount);
@@ -231,46 +237,44 @@ public class PotionFileHandler {
     private static <T> void writePotionMixToFile(Gson gson, Path filePath, PotionBrewingRecipe recipe, AtomicInteger  updatedFileCount) {
         DataResult<JsonElement> jsonElement = PotionBrewingRecipe.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, recipe);
         try (FileWriter writer = new FileWriter(filePath.toFile())) {
-            gson.toJson(jsonElement.getOrThrow(), writer);
+            gson.toJson(jsonElement.get().left().get(), writer);
             updatedFileCount.incrementAndGet();
         } catch (IOException e) {
             LOGGER.error("Error writing potion mix to file: ", e);
         }
     }
 
-    //private static <T> void writeContainerToFile(Gson gson, Path filePath, PotionBrewingRecipe recipe, AtomicInteger  updatedFileCount) {
-    //    DataResult<JsonElement> jsonElement = PotionBrewingRecipe.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, recipe);
-    //    try (FileWriter writer = new FileWriter(filePath.toFile())) {
-    //        gson.toJson(jsonElement.getOrThrow(), writer);
-    //        updatedFileCount.incrementAndGet();
-    //    } catch (IOException e) {
-    //        LOGGER.error("Error writing container to file: ", e);
-    //    }
-    //}
 
     private static void sendPlayerMessage(Player player, String message) {
         player.sendSystemMessage(Component.literal(message).withStyle(ChatFormatting.GREEN));
     }
 
     private static String createPotionFileName(PotionBrewing.Mix<Potion> potionMix, ResourceLocation key) {
+        ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+
         return String.format("potion_from_%s_with_ingredient_%s_to_%s.json",
-                potionMix.from().getRegisteredName().split(":")[1],
+                keyFrom.getPath(),
                 key.getPath(),
-                potionMix.to().getRegisteredName().split(":")[1]);
+                keyTo.getPath());
     }
 
     private static String removePotionFileName(PotionBrewing.Mix<Potion> potionMix, ResourceLocation key) {
+        ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
         return String.format("remove_potion_from_%s_with_ingredient_%s_to_%s.json",
-                potionMix.from().getRegisteredName().split(":")[1],
+                keyFrom.getPath(),
                 key.getPath(),
-                potionMix.to().getRegisteredName().split(":")[1]);
+                keyTo.getPath());
     }
 
     private static String replacePotionFileName(PotionBrewing.Mix<Potion> potionMix, ResourceLocation key) {
+        ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
         return String.format("replace_potion_from_%s_with_ingredient_%s_to_%s.json",
-                potionMix.from().getRegisteredName().split(":")[1],
+                keyFrom.getPath(),
                 key.getPath(),
-                potionMix.to().getRegisteredName().split(":")[1]);
+                keyTo.getPath());
     }
 
     private static String createContainerFileName(Ingredient container) {
@@ -289,24 +293,30 @@ public class PotionFileHandler {
     }
 
     private static String createContainerMixFileName(PotionBrewing.Mix<Item> potionMix, ResourceLocation key) {
+        ResourceLocation keyFrom = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
         return String.format("container_mix_from_%s_with_ingredient_%s_to_%s.json",
-                potionMix.from().getRegisteredName().split(":")[1],
+                keyFrom.getPath(),
                 key.getPath(),
-                potionMix.to().getRegisteredName().split(":")[1]);
+                keyTo.getPath());
     }
 
     private static String removeContainerMixFileName(PotionBrewing.Mix<Item> potionMix, ResourceLocation key) {
+        ResourceLocation keyFrom = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
         return String.format("remove_container_mix_from_%s_with_ingredient_%s_to_%s.json",
-                potionMix.from().getRegisteredName().split(":")[1],
+                keyFrom.getPath(),
                 key.getPath(),
-                potionMix.to().getRegisteredName().split(":")[1]);
+                keyTo.getPath());
     }
 
     private static String replaceContainerMixFileName(PotionBrewing.Mix<Item> potionMix, ResourceLocation key) {
+        ResourceLocation keyFrom = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
         return String.format("remove_container_mix_from_%s_with_ingredient_%s_to_%s.json",
-                potionMix.from().getRegisteredName().split(":")[1],
+                keyFrom.getPath(),
                 key.getPath(),
-                potionMix.to().getRegisteredName().split(":")[1]);
+                keyTo.getPath());
     }
 
 

@@ -1,22 +1,15 @@
 package com.scouter.brewmaster.data;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
 import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.slf4j.Logger;
 
 import java.util.Iterator;
 import java.util.List;
@@ -25,29 +18,20 @@ public class ReplaceContainerRecipe implements PotionBrewingRecipe {
 
     private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
-    public static final MapCodec<ReplaceContainerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<ReplaceContainerRecipe> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").fieldOf("old_container").forGetter(ReplaceContainerRecipe::getOldContainer),
                     AddContainerRecipe.CODEC.fieldOf("new_container").forGetter(ReplaceContainerRecipe::getAddContainerMixRecipe)
             ).apply(instance, ReplaceContainerRecipe::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ReplaceContainerRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(BuiltInRegistries.ITEM.byNameCodec()), ReplaceContainerRecipe::getOldContainer,
-            AddContainerRecipe.STREAM_CODEC, ReplaceContainerRecipe::getAddContainerMixRecipe,
-            ReplaceContainerRecipe::new
-    );
 
     public static final PotionBrewingRecipeType<ReplaceContainerRecipe> TYPE = new PotionBrewingRecipeType<ReplaceContainerRecipe>() {
         @Override
-        public MapCodec<ReplaceContainerRecipe> mapCodec() {
+        public Codec<ReplaceContainerRecipe> codec() {
             return CODEC;
         }
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ReplaceContainerRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     };
 
 

@@ -13,13 +13,20 @@ import java.util.List;
 public interface PotionBrewingAccessor {
 
 
-    @Accessor("potionMixes")
-    List<PotionBrewing.Mix<Potion>> brewmaster$getPotionMixes();
+    @Accessor("POTION_MIXES")
+    static List<PotionBrewing.Mix<Potion>> brewmaster$getPotionMixes() {
+        throw new AssertionError("Accessor was not transformed");
+    }
 
-    @Accessor("containerMixes")
-    List<PotionBrewing.Mix<Item>> brewmaster$getMixes();
+    @Accessor("CONTAINER_MIXES")
+    static List<PotionBrewing.Mix<Item>> brewmaster$getMixes() {
+        throw new AssertionError("Accessor was not transformed");
+    }
 
-    @Accessor("containers")
-    List<Ingredient> brewmaster$getContainers();
+    @Accessor("ALLOWED_CONTAINERS")
+    static List<Ingredient> brewmaster$getContainers() {
+        throw new AssertionError("Accessor was not transformed");
+    }
+
 
 }

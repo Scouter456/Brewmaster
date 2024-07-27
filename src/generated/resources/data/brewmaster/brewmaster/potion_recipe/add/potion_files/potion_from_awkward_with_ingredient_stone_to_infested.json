@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:awkward",
-  "ingredient": {
-    "item": "minecraft:stone"
-  },
-  "output_potion": "minecraft:infested",
-  "type": "brewmaster:add_potion_mix"
-}

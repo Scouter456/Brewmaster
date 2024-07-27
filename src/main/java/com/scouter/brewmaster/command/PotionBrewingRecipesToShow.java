@@ -8,16 +8,12 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PotionBrewingRecipesToShow {
@@ -28,15 +24,15 @@ public class PotionBrewingRecipesToShow {
 
     public static void setPotions(List<PotionBrewing.Mix<Potion>> potionsList) {
         for(PotionBrewing.Mix<Potion> mix : potionsList) {
-            holders.add(mix.to());
-            List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to(), potionHolder -> new ArrayList<>());
+            holders.add(mix.to);
+            List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to, potionHolder -> new ArrayList<>());
             mixes.add(mix);
-            potions.put(mix.to(), mixes);
+            potions.put(mix.to, mixes);
         }
     }
 
     public static Stream<String> getRegisteredPotions() {
-        return holders.stream().map(Holder::getRegisteredName);
+        return holders.stream().map(potionHolder -> getName(potionHolder));
     }
 
     private static List<PotionBrewing.Mix<Potion>> getMixesList(Holder<Potion> potionHolder) {
@@ -46,7 +42,7 @@ public class PotionBrewingRecipesToShow {
 
 
     public static void printMessageForPotion(ServerPlayer player, Holder<Potion> potionHolder) {
-        player.sendSystemMessage(Component.literal("Mix(es) for " + potionHolder.getRegisteredName()));
+        player.sendSystemMessage(Component.literal("Mix(es) for " + getName(potionHolder)));
         AtomicInteger integer = new AtomicInteger(1);
         for(PotionBrewing.Mix<Potion> mix : getMixesList(potionHolder)) {
             player.sendSystemMessage(formatPotionMessage(mix, integer));
@@ -56,11 +52,13 @@ public class PotionBrewingRecipesToShow {
 
     private static Component formatPotionMessage(PotionBrewing.Mix<Potion> potionMix, AtomicInteger integer) {
         // Extract potion names
-        String potionInput = potionMix.from().getRegisteredName();
-        String potionOutput = potionMix.to().getRegisteredName();
+
+
+        String potionInput = getName(potionMix.from);
+        String potionOutput = getName(potionMix.to);
 
         // Extract ingredients
-        ItemStack[] ingredients = potionMix.ingredient().getItems();
+        ItemStack[] ingredients = potionMix.ingredient.getItems();
 
         // Create colored components for each part
         MutableComponent formattedMessage = Component.literal("");
@@ -90,5 +88,7 @@ public class PotionBrewingRecipesToShow {
         return formattedMessage;
     }
 
-
+    public static String getName(Holder<Potion> potionHolder) {
+        return BuiltInRegistries.POTION.getKey(potionHolder.get()).toString();
+    }
 }

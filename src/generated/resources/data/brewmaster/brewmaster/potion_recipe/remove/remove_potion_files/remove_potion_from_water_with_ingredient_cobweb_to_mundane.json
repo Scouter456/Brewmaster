@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:water",
-    "ingredient": "minecraft:cobweb",
-    "output_potion": "minecraft:mundane"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

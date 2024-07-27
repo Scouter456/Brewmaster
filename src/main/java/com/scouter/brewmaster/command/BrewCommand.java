@@ -1,21 +1,10 @@
 package com.scouter.brewmaster.command;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import com.mojang.logging.LogUtils;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import com.scouter.brewmaster.Brewmaster;
-import com.scouter.brewmaster.data.AddPotionMixRecipe;
-import com.scouter.brewmaster.data.OldRecipe;
-import com.scouter.brewmaster.data.PotionBrewingRecipe;
-import com.scouter.brewmaster.data.RemovePotionMixRecipe;
-import com.scouter.brewmaster.mixin.access.PotionBrewingAccessor;
 import com.scouter.brewmaster.util.CustomLogger;
 import com.scouter.brewmaster.util.PotionFileHandler;
 import net.minecraft.ChatFormatting;
@@ -25,22 +14,17 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.neoforged.fml.loading.FMLPaths;
-import org.slf4j.Logger;
+import net.minecraftforge.fml.loading.FMLPaths;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 
 public class BrewCommand {
@@ -92,13 +76,14 @@ public class BrewCommand {
         Entity nullableSummoner = c.getSource().getEntity();
         ServerLevel level = c.getSource().getLevel();
         Path PATH = FMLPaths.GAMEDIR.get().resolve("brewmaster/potion_files");
-        Optional<Holder.Reference<Potion>> reference = BuiltInRegistries.POTION.getHolder(location);
+        ResourceKey key = ResourceKey.create(Registries.POTION, location);
+        Optional<Holder.Reference<Potion>> reference = BuiltInRegistries.POTION.getHolder(key);
         if(nullableSummoner instanceof ServerPlayer player) {
             if (!reference.isPresent()) {
                 player.sendSystemMessage(Component.literal("Potion not available!").withStyle(ChatFormatting.RED));
                 return 0;
             } else {
-                Holder<Potion> potionHolder = reference.get().getDelegate();
+                Holder<Potion> potionHolder = reference.get();
                 PotionBrewingRecipesToShow.printMessageForPotion(player, potionHolder);
             }
         }

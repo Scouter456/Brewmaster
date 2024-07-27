@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:awkward",
-    "ingredient": "minecraft:breeze_rod",
-    "output_potion": "minecraft:wind_charged"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}
