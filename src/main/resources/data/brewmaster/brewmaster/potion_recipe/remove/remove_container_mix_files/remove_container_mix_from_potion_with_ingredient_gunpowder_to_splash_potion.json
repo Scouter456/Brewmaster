@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_item": "minecraft:potion",
-    "ingredient": "minecraft:gunpowder",
-    "output_item": "minecraft:splash_potion"
-  },
-  "type": "brewmaster:remove_container_mix"
-}

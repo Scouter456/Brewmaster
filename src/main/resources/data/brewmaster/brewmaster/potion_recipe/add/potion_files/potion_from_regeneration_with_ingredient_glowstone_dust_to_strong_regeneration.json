@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:regeneration",
-  "ingredient": {
-    "item": "minecraft:glowstone_dust"
-  },
-  "output_potion": "minecraft:strong_regeneration",
-  "type": "brewmaster:add_potion_mix"
-}

@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:strong_poison",
-  "ingredient": {
-    "item": "minecraft:fermented_spider_eye"
-  },
-  "output_potion": "minecraft:strong_harming",
-  "type": "brewmaster:add_potion_mix"
-}

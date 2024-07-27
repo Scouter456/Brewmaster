@@ -1,12 +1,10 @@
 package com.scouter.brewmaster.data;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
 import com.scouter.brewmaster.util.CustomLogger;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -19,27 +17,18 @@ public class RemovePotionMixRecipe implements PotionBrewingRecipe {
 
     private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
-    public static final MapCodec<RemovePotionMixRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<RemovePotionMixRecipe> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     OldRecipe.CODEC.fieldOf("recipe_to_remove").forGetter(RemovePotionMixRecipe::getOldRecipe)
             ).apply(instance, RemovePotionMixRecipe::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf,RemovePotionMixRecipe> STREAM_CODEC = StreamCodec.composite(
-            OldRecipe.STREAM_CODEC, RemovePotionMixRecipe::getOldRecipe,
-            RemovePotionMixRecipe::new
-    );
-
     public static final PotionBrewingRecipeType<RemovePotionMixRecipe> TYPE = new PotionBrewingRecipeType<RemovePotionMixRecipe>() {
         @Override
-        public MapCodec<RemovePotionMixRecipe> mapCodec() {
+        public Codec<RemovePotionMixRecipe> codec() {
             return CODEC;
         }
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, RemovePotionMixRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     };
 
     private final OldRecipe oldRecipe;
@@ -55,9 +44,9 @@ public class RemovePotionMixRecipe implements PotionBrewingRecipe {
 
         while (iterator.hasNext()) {
             PotionBrewing.Mix<Potion> potionMix = iterator.next();
-            if (potionMix.from().is(oldRecipe.input()) &&
-                    potionMix.ingredient().test(oldRecipe.ingredient().getDefaultInstance()) &&
-                    potionMix.to().is(oldRecipe.result())) {
+            if (potionMix.from == oldRecipe.input() &&
+                    potionMix.ingredient.test(oldRecipe.ingredient().getDefaultInstance()) &&
+                    potionMix.to == oldRecipe.result()) {
 
                 iterator.remove();  // Safely removes the element from the list
                 foundRecipe = true;
@@ -66,7 +55,7 @@ public class RemovePotionMixRecipe implements PotionBrewingRecipe {
         }
 
         if (!foundRecipe) {
-            LOGGER.logWarning("remove_potion_mix did not find old recipe with input {}, ingredient {}, result {}", oldRecipe.input().getRegisteredName(), oldRecipe.ingredient(), oldRecipe.result().getRegisteredName());
+            LOGGER.logWarning("remove_potion_mix did not find old recipe with input {}, ingredient {}, result {}", oldRecipe.getInputRL(), oldRecipe.ingredient(), oldRecipe.getResultRl());
         }
     }
 

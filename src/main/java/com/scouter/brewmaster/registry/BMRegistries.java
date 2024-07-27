@@ -23,7 +23,7 @@ public class BMRegistries {
 
         private static <T> ResourceKey<Registry<T>> key(String name)
         {
-            return ResourceKey.createRegistryKey(ResourceLocation.parse(name));
+            return ResourceKey.createRegistryKey(new ResourceLocation(name));
         }
         private static void init() {}
 

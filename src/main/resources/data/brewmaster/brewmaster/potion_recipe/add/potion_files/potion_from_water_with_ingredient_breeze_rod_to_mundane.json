@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:water",
-  "ingredient": {
-    "item": "minecraft:breeze_rod"
-  },
-  "output_potion": "minecraft:mundane",
-  "type": "brewmaster:add_potion_mix"
-}

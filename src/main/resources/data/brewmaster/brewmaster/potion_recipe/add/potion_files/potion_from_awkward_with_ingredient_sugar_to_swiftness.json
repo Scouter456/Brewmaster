@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:awkward",
-  "ingredient": {
-    "item": "minecraft:sugar"
-  },
-  "output_potion": "minecraft:swiftness",
-  "type": "brewmaster:add_potion_mix"
-}

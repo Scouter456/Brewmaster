@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:long_night_vision",
-  "ingredient": {
-    "item": "minecraft:fermented_spider_eye"
-  },
-  "output_potion": "minecraft:long_invisibility",
-  "type": "brewmaster:add_potion_mix"
-}

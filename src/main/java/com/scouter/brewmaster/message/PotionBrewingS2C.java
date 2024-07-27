@@ -1,15 +1,21 @@
 package com.scouter.brewmaster.message;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.Brewmaster;
-import com.scouter.brewmaster.events.PotionBrewingRecipeExtension;
+import com.scouter.brewmaster.data.OldContainerRecipe;
+import com.scouter.brewmaster.data.OldRecipe;
+import com.scouter.brewmaster.mixin.access.PotionBrewingAccessor;
 import com.scouter.brewmaster.util.ClientUtils;
-import com.scouter.brewmaster.util.PotionUtil;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
@@ -17,60 +23,101 @@ import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PotionBrewingS2C implements CustomPacketPayload {
+public class PotionBrewingS2C {
+    public static final ResourceLocation ID = new ResourceLocation(Brewmaster.MODID, "potion_brewing_s2c");
 
-    public static final Type<PotionBrewingS2C> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Brewmaster.MODID, "potion_brewing_s2c"));
-
-    private final List<PotionBrewing.Mix<Potion>> potionMixes;
-
-    private final List<PotionBrewing.Mix<Item>> mixes;
-    private final List<Ingredient> containers;
-    public static final StreamCodec<RegistryFriendlyByteBuf, PotionBrewingS2C> STREAM_CODEC = StreamCodec.composite(
-            PotionUtil.POTION_BREWING_MIX_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getPotionMixes,
-            PotionUtil.ITEM_BREWING_MIX_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getMixes,
-            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), PotionBrewingS2C::getContainers,
-            PotionBrewingS2C::new
+    public static final Codec<PotionBrewingS2C> MAPPER = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    OldRecipe.CODEC.listOf().fieldOf("in").forGetter(PotionBrewingS2C::getPotionMixes),
+                    OldContainerRecipe.CODEC.listOf().fieldOf("out").forGetter(PotionBrewingS2C::getMixes),
+                    BuiltInRegistries.ITEM.byNameCodec().listOf().fieldOf("idk").forGetter(PotionBrewingS2C::getContainers)
+            ).apply(instance, PotionBrewingS2C::new)
     );
 
-    public PotionBrewingS2C(List<PotionBrewing.Mix<Potion>> potionMixes, List<PotionBrewing.Mix<Item>> containerRecipes, List<Ingredient> containers) {
+    private final List<OldRecipe> potionMixes;
+
+    private final List<OldContainerRecipe> mixes;
+    private final List<Item> containers;
+
+    public PotionBrewingS2C(List<OldRecipe> potionMixes, List<OldContainerRecipe> containerRecipes, List<Item> containers) {
         this.potionMixes = potionMixes;
         this.mixes = containerRecipes;
         this.containers = containers;
         //this.mixes = mixes;
     }
 
-
-    public List<PotionBrewing.Mix<Potion>> getPotionMixes() {
-        return potionMixes;
+    public static FriendlyByteBuf write(PotionBrewingS2C v) {
+        FriendlyByteBuf buffer = PacketByteBufs.create();
+        CompoundTag encodedTag = (CompoundTag) (MAPPER.encodeStart(NbtOps.INSTANCE, v).result().orElse(new CompoundTag()));
+        buffer.writeNbt(encodedTag);
+        return buffer;
     }
 
-    public List<PotionBrewing.Mix<Item>> getMixes() {
-        return mixes;
+    public void encode(FriendlyByteBuf buffer) {
+        CompoundTag encodedTag = (CompoundTag) (MAPPER.encodeStart(NbtOps.INSTANCE, this).result().orElse(new CompoundTag()));
+        buffer.writeNbt(encodedTag);
     }
 
-    public List<Ingredient> getContainers() {
-        return containers;
+    public static PotionBrewingS2C decode(FriendlyByteBuf buffer) {
+        CompoundTag receivedTag = buffer.readNbt();
+        return MAPPER.parse(NbtOps.INSTANCE, receivedTag).result().orElse(null);
     }
 
-    public void onPacketReceived(ClientPlayNetworking.Context contextGetter) {
-        handlePacketOnMainThread();
+    public static void onPacketReceived(Minecraft client, ClientPacketListener networkHandler, FriendlyByteBuf buf, PacketSender sender) {
+        PotionBrewingS2C potionBrewingS2C = PotionBrewingS2C.decode(buf);
+        potionBrewingS2C.handlePacketOnMainThread();
     }
 
     private void handlePacketOnMainThread() {
-        Level level = ClientUtils.getLevel();
-        ClientLevel clientLevel = (ClientLevel) level;
-        if (level == null || clientLevel == null) return;
-        PotionBrewing potionBrewing = clientLevel.potionBrewing();
-        ((PotionBrewingRecipeExtension) potionBrewing).setPotionMixes(List.copyOf(potionMixes));
-        ((PotionBrewingRecipeExtension) potionBrewing).setMixes(List.copyOf(mixes));
-        ((PotionBrewingRecipeExtension) potionBrewing).setContainer(List.copyOf(containers));
-        //((PotionBrewingRecipeExtension)potionBrewing).setMixes(List.copyOf(mixes));    }
+
+        List<PotionBrewing.Mix<Potion>> pMix = new ArrayList<>();
+        List<PotionBrewing.Mix<Item>> iMix = new ArrayList<>();
+        List<Ingredient> inMix = containers.stream().map(Ingredient::of).toList();
+
+        for(OldRecipe oldRecipe : potionMixes) {
+            pMix.add(oldRecipe.toMix());
+        }
+        for(OldContainerRecipe oldRecipe : mixes) {
+            iMix.add(oldRecipe.toMix());
+        }
+        setAllMixes(pMix, iMix, inMix);
     }
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public List<OldRecipe> getPotionMixes() {
+        return potionMixes;
+    }
+
+    public List<OldContainerRecipe> getMixes() {
+        return mixes;
+    }
+
+    public List<Item> getContainers() {
+        return containers;
+    }
+
+
+    public static void setAllMixes(List<PotionBrewing.Mix<Potion>> potionMixes, List<PotionBrewing.Mix<Item>> mixes, List<Ingredient> container) {
+        brewmaster$setPotionMixes(potionMixes);
+        brewmaster$setMixes(mixes);
+        brewmaster$setContainer(container);
+    }
+
+    static void brewmaster$setPotionMixes(List<PotionBrewing.Mix<Potion>> potionMixes) {
+        PotionBrewingAccessor.brewmaster$getPotionMixes().clear();
+        PotionBrewingAccessor.brewmaster$getPotionMixes().addAll(potionMixes);
+
+    }
+
+    static void brewmaster$setMixes(List<PotionBrewing.Mix<Item>> mixes) {
+        PotionBrewingAccessor.brewmaster$getMixes().clear();
+        PotionBrewingAccessor.brewmaster$getMixes().addAll(mixes);
+    }
+
+    static void brewmaster$setContainer(List<Ingredient> container) {
+        PotionBrewingAccessor.brewmaster$getContainers().clear();
+        PotionBrewingAccessor.brewmaster$getContainers().addAll(container);
     }
 }

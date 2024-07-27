@@ -1,14 +1,11 @@
 package com.scouter.brewmaster.data;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
 import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -21,27 +18,20 @@ public class RemoveContainerRecipe implements PotionBrewingRecipe {
 
     private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
-    public static final MapCodec<RemoveContainerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<RemoveContainerRecipe> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").fieldOf("container").forGetter(RemoveContainerRecipe::getItem)
-                    ).apply(instance, RemoveContainerRecipe::new)
+            ).apply(instance, RemoveContainerRecipe::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, RemoveContainerRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(BuiltInRegistries.ITEM.byNameCodec()), RemoveContainerRecipe::getItem,
-            RemoveContainerRecipe::new
-    );
+
 
     public static final PotionBrewingRecipeType<RemoveContainerRecipe> TYPE = new PotionBrewingRecipeType<RemoveContainerRecipe>() {
         @Override
-        public MapCodec<RemoveContainerRecipe> mapCodec() {
+        public Codec<RemoveContainerRecipe> codec() {
             return CODEC;
         }
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, RemoveContainerRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     };
 
     private final Item item;

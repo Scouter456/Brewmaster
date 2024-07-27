@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:awkward",
-  "ingredient": {
-    "item": "minecraft:golden_carrot"
-  },
-  "output_potion": "minecraft:night_vision",
-  "type": "brewmaster:add_potion_mix"
-}

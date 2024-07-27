@@ -7,21 +7,16 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.util.CustomLogger;
 import com.scouter.brewmaster.util.PotionFileHandler;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.alchemy.Potion;
-
-import java.util.Optional;
 
 public class BrewCommand {
     private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
@@ -71,15 +66,14 @@ public class BrewCommand {
     public static int showRecipe(CommandContext<CommandSourceStack> c, ResourceLocation location) {
         Entity nullableSummoner = c.getSource().getEntity();
         ServerLevel level = c.getSource().getLevel();
-        Optional<Holder.Reference<Potion>> reference = BuiltInRegistries.POTION.getHolder(location);
+        Potion reference = BuiltInRegistries.POTION.get(location);
         if(nullableSummoner instanceof ServerPlayer player) {
-            if (!reference.isPresent()) {
-                player.sendSystemMessage(Component.literal("Potion not available!").withStyle(ChatFormatting.RED));
-                return 0;
-            } else {
-                Holder<Potion> potionHolder = reference.get();
-                PotionBrewingRecipesToShow.printMessageForPotion(player, potionHolder);
-            }
+            //if (!reference.isPresent()) {
+            //    player.sendSystemMessage(Component.literal("Potion not available!").withStyle(ChatFormatting.RED));
+            //    return 0;
+            //} else {
+                PotionBrewingRecipesToShow.printMessageForPotion(player, reference);
+            //}
         }
         return 0;
     }

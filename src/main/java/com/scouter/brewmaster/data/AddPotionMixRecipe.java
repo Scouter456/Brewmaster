@@ -2,15 +2,10 @@ package com.scouter.brewmaster.data;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
@@ -21,43 +16,33 @@ import java.util.List;
 
 public class AddPotionMixRecipe implements PotionBrewingRecipe {
 
-    public static final MapCodec<AddPotionMixRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<AddPotionMixRecipe> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    BuiltInRegistries.POTION.holderByNameCodec().fieldOf("input_potion").forGetter(AddPotionMixRecipe::getInput),
+                    BuiltInRegistries.POTION.byNameCodec().fieldOf("input_potion").forGetter(AddPotionMixRecipe::getInput),
                     Codec.either(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").codec(), TagKey.codec(Registries.ITEM).fieldOf("tag").codec()).fieldOf("ingredient").forGetter(predicate ->
                             predicate.item != null ? Either.left(predicate.item) : Either.right(predicate.itemTagKey)
                     ),
-                    BuiltInRegistries.POTION.holderByNameCodec().fieldOf("output_potion").forGetter(AddPotionMixRecipe::getResult)
+                    BuiltInRegistries.POTION.byNameCodec().fieldOf("output_potion").forGetter(AddPotionMixRecipe::getResult)
             ).apply(instance, AddPotionMixRecipe::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf,AddPotionMixRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(BuiltInRegistries.POTION.holderByNameCodec()), AddPotionMixRecipe::getInput,
-            ByteBufCodecs.either(ByteBufCodecs.fromCodec(BuiltInRegistries.ITEM.byNameCodec()), ByteBufCodecs.fromCodec(TagKey.codec(Registries.ITEM))), AddPotionMixRecipe::getEither,
-            ByteBufCodecs.fromCodec(BuiltInRegistries.POTION.holderByNameCodec()), AddPotionMixRecipe::getResult,
-            AddPotionMixRecipe::new
-    );
 
     public static final PotionBrewingRecipeType<AddPotionMixRecipe> TYPE = new PotionBrewingRecipeType<AddPotionMixRecipe>() {
         @Override
-        public MapCodec<AddPotionMixRecipe> mapCodec() {
+        public Codec<AddPotionMixRecipe> codec() {
             return CODEC;
         }
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, AddPotionMixRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     };
 
 
     private final Item item;
     private final TagKey<Item> itemTagKey;
-    private final Holder<Potion> input;
-    private final Holder<Potion> result;
+    private final Potion input;
+    private final Potion result;
     private final Either<Item, TagKey<Item>> either;
 
-    public AddPotionMixRecipe(Holder<Potion> input, Either<Item, TagKey<Item>> either, Holder<Potion> result) {
+    public AddPotionMixRecipe(Potion input, Either<Item, TagKey<Item>> either, Potion result) {
         this.item = either.left().orElse(null);
         this.itemTagKey = either.right().orElse(null);
         this.input = input;
@@ -66,7 +51,7 @@ public class AddPotionMixRecipe implements PotionBrewingRecipe {
     }
 
 
-    public AddPotionMixRecipe(Holder<Potion> input, TagKey<Item> item, Holder<Potion> result) {
+    public AddPotionMixRecipe(Potion input, TagKey<Item> item, Potion result) {
         this.item = null;
         this.itemTagKey = item;
         this.input = input;
@@ -74,7 +59,7 @@ public class AddPotionMixRecipe implements PotionBrewingRecipe {
         this.either = null;
     }
 
-    public AddPotionMixRecipe(Holder<Potion> input, Item item, Holder<Potion> result) {
+    public AddPotionMixRecipe(Potion input, Item item, Potion result) {
         this.item = item;
         this.itemTagKey = null;
         this.input = input;
@@ -124,11 +109,11 @@ public class AddPotionMixRecipe implements PotionBrewingRecipe {
         return BMPotionRecipeRegistry.ADD_POTION_MIX;
     }
 
-    public Holder<Potion> getInput() {
+    public Potion getInput() {
         return input;
     }
 
-    public Holder<Potion> getResult() {
+    public Potion getResult() {
         return result;
     }
 

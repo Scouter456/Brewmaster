@@ -3,11 +3,9 @@ package com.scouter.brewmaster;
 import com.scouter.brewmaster.command.BrewCommand;
 import com.scouter.brewmaster.data.BrewmasterJsonManager;
 import com.scouter.brewmaster.events.FabricEvents;
-import com.scouter.brewmaster.message.PotionBrewingS2C;
 import com.scouter.brewmaster.setup.Registration;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -25,7 +23,6 @@ public class Brewmaster implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PayloadTypeRegistry.playS2C().register(PotionBrewingS2C.TYPE, PotionBrewingS2C.STREAM_CODEC);
 		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BrewmasterJsonManager());
 		CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> BrewCommand.register(commandDispatcher));
 
@@ -37,6 +34,6 @@ public class Brewmaster implements ModInitializer {
 	}
 
 	public static ResourceLocation prefix(String name) {
-		return ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
+		return new ResourceLocation(MODID, name.toLowerCase(Locale.ROOT));
 	}
 }

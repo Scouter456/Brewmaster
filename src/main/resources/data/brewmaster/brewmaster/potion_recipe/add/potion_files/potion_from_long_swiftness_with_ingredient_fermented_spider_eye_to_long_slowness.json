@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:long_swiftness",
-  "ingredient": {
-    "item": "minecraft:fermented_spider_eye"
-  },
-  "output_potion": "minecraft:long_slowness",
-  "type": "brewmaster:add_potion_mix"
-}

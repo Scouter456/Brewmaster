@@ -49,11 +49,10 @@ public class BrewmasterJsonManager extends SimpleJsonResourceReloadListener impl
             ResourceLocation key = entry.getKey();
             JsonElement element = entry.getValue();
             PotionBrewingRecipe.DIRECT_CODEC.decode(JsonOps.INSTANCE, element)
-                    .ifSuccess(result -> {
+                    .get().ifLeft(result -> {
                         PotionBrewingRecipe codec = result.getFirst();
                         recipeHashMap.put(key, codec);
-                    })
-                    .ifError(partial -> LOGGER.error("Failed to parse pattern JSON for {} due to: {}", key, partial.message()));
+                    }).ifRight(partial -> LOGGER.error("Failed to parse pattern JSON for {} due to: {}", key, partial.message()));
 
 
         }

@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:night_vision",
-    "ingredient": "minecraft:redstone",
-    "output_potion": "minecraft:long_night_vision"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

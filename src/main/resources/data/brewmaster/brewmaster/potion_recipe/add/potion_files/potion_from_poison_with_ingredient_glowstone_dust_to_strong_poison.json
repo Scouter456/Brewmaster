@@ -1,8 +1,0 @@
-{
-  "input_potion": "minecraft:poison",
-  "ingredient": {
-    "item": "minecraft:glowstone_dust"
-  },
-  "output_potion": "minecraft:strong_poison",
-  "type": "brewmaster:add_potion_mix"
-}

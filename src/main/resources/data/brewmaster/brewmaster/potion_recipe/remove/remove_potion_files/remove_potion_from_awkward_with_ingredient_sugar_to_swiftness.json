@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:awkward",
-    "ingredient": "minecraft:sugar",
-    "output_potion": "minecraft:swiftness"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

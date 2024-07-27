@@ -1,8 +1,0 @@
-{
-  "recipe_to_remove": {
-    "input_potion": "minecraft:swiftness",
-    "ingredient": "minecraft:redstone",
-    "output_potion": "minecraft:long_swiftness"
-  },
-  "type": "brewmaster:remove_potion_mix"
-}

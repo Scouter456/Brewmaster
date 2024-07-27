@@ -8,6 +8,6 @@ public class ClientSetup implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        ClientPlayNetworking.registerGlobalReceiver(PotionBrewingS2C.TYPE, PotionBrewingS2C::onPacketReceived);
+        ClientPlayNetworking.registerGlobalReceiver(PotionBrewingS2C.ID, PotionBrewingS2C::onPacketReceived);
     }
 }

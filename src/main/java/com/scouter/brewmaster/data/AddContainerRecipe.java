@@ -2,14 +2,10 @@ package com.scouter.brewmaster.data;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
@@ -20,7 +16,7 @@ import java.util.List;
 
 public class AddContainerRecipe implements PotionBrewingRecipe{
 
-    public static final MapCodec<AddContainerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<AddContainerRecipe> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.either(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").codec(),TagKey.codec(Registries.ITEM).fieldOf("tag").codec()).fieldOf("container").forGetter(predicate ->
                             predicate.item != null ? Either.left(predicate.item) : Either.right(predicate.itemTagKey)
@@ -28,21 +24,14 @@ public class AddContainerRecipe implements PotionBrewingRecipe{
             ).apply(instance, AddContainerRecipe::new)
     );
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, AddContainerRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.either(ByteBufCodecs.fromCodec(BuiltInRegistries.ITEM.byNameCodec()), ByteBufCodecs.fromCodec(TagKey.codec(Registries.ITEM))), AddContainerRecipe::getEither,
-            AddContainerRecipe::new
-    );
+
 
     public static final PotionBrewingRecipeType<AddContainerRecipe> TYPE = new PotionBrewingRecipeType<AddContainerRecipe>() {
         @Override
-        public MapCodec<AddContainerRecipe> mapCodec() {
+        public Codec<AddContainerRecipe> codec() {
             return CODEC;
         }
 
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, AddContainerRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     };
 
     private final Item item;
