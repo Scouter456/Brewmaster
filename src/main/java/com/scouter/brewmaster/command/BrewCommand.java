@@ -10,11 +10,13 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.data.AddPotionMixRecipe;
 import com.scouter.brewmaster.data.OldRecipe;
 import com.scouter.brewmaster.data.PotionBrewingRecipe;
 import com.scouter.brewmaster.data.RemovePotionMixRecipe;
 import com.scouter.brewmaster.mixin.access.PotionBrewingAccessor;
+import com.scouter.brewmaster.util.CustomLogger;
 import com.scouter.brewmaster.util.PotionFileHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -42,7 +44,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class BrewCommand {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_TYPE = (ctx, builder) -> {
         return SharedSuggestionProvider.suggest(PotionBrewingRecipesToShow.getRegisteredPotions(), builder);

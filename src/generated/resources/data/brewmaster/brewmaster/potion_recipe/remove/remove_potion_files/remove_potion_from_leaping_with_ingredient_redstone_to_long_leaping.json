@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:leaping",
+    "ingredient": "minecraft:redstone",
+    "output_potion": "minecraft:long_leaping"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

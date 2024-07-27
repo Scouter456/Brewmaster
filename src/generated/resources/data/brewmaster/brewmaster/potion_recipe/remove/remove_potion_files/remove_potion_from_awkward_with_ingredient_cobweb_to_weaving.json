@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:cobweb",
+    "output_potion": "minecraft:weaving"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

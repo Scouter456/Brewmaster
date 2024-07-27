@@ -7,6 +7,7 @@ import com.scouter.brewmaster.data.PotionBrewingRecipe;
 import com.scouter.brewmaster.message.PotionBrewingS2C;
 import com.scouter.brewmaster.mixin.access.PotionBrewingAccessor;
 import com.scouter.brewmaster.registry.BMRegistries;
+import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = Brewmaster.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class NeoForgeEvents {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
     @SubscribeEvent
     public static void onServerStart(ServerStartingEvent event) {
@@ -40,7 +41,7 @@ public class NeoForgeEvents {
         if (event.getPlayer() == null) {
             event.getRelevantPlayers().findAny().ifPresentOrElse(
                     player -> setRecipes(Objects.requireNonNull(player.getServer())),
-                    () -> LOGGER.error("Not able to set potion recipes!!!")
+                    () -> LOGGER.logError("Not able to set potion recipes!!!")
             );
             for (ServerPlayer serverPlayer : event.getRelevantPlayers().toList()) {
                 synchWithMessage(serverPlayer);
@@ -56,7 +57,7 @@ public class NeoForgeEvents {
         try {
             synchRecipes(player);
         } catch (Exception e) {
-            LOGGER.error("Was not able to synch recipe for {} due to {}", player, e.toString());
+            LOGGER.logError("Was not able to synch recipe for {} due to {}", player, e.toString());
         }
     }
 
@@ -64,7 +65,7 @@ public class NeoForgeEvents {
         PotionBrewing potionBrewing = server.potionBrewing();
         server.registryAccess().registry(BMRegistries.Keys.POTION_RECIPE).ifPresent(
                 potionBrewingRecipes -> {
-                    LOGGER.info("brewmaster: Adding brewing recipes");
+                    LOGGER.logInfo("Adding brewing recipes");
                     int total = 0;
                     List<PotionBrewing.Mix<Potion>> currentMixes = new ArrayList<>(((PotionBrewingAccessor) potionBrewing).brewmaster$getPotionMixes());
                     List<PotionBrewing.Mix<Item>> mixes = new ArrayList<>(((PotionBrewingAccessor) potionBrewing).brewmaster$getMixes());
@@ -84,7 +85,7 @@ public class NeoForgeEvents {
                         recipe.addContainers(container);
                     }
                     PotionBrewingRecipesToShow.setPotions(currentMixes);
-                    LOGGER.info("brewmaster: Added a total of {} recipes ", total);
+                    LOGGER.logInfo("Added a total of {} recipes ", total);
                     ((PotionBrewingRecipeExtension) potionBrewing).setMixes(List.copyOf(mixes));
                     ((PotionBrewingRecipeExtension) potionBrewing).setPotionMixes(List.copyOf(currentMixes));
                     ((PotionBrewingRecipeExtension) potionBrewing).setContainer(List.copyOf(container));
@@ -106,7 +107,7 @@ public class NeoForgeEvents {
             try {
                 synchRecipes(serverPlayer);
             } catch (Exception e) {
-                LOGGER.error("Was not able to synch recipe for {} due to {}", serverPlayer, e.toString());
+                LOGGER.logError("Was not able to synch recipe for {} due to {}", serverPlayer, e.toString());
             }
         }
     }

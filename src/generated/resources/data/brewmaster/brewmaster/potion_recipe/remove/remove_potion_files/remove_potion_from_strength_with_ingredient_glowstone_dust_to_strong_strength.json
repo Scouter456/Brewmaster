@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:strength",
+    "ingredient": "minecraft:glowstone_dust",
+    "output_potion": "minecraft:strong_strength"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

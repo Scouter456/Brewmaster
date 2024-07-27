@@ -1,0 +1,6 @@
+{
+  "container": {
+    "item": "minecraft:lingering_potion"
+  },
+  "type": "brewmaster:remove_container"
+}

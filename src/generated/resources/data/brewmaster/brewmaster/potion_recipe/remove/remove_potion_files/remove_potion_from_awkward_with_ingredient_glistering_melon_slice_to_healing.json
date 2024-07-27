@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:glistering_melon_slice",
+    "output_potion": "minecraft:healing"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

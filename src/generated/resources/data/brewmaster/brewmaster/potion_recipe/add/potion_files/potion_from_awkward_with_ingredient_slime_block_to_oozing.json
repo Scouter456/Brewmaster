@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:awkward",
+  "ingredient": {
+    "item": "minecraft:slime_block"
+  },
+  "output_potion": "minecraft:oozing",
+  "type": "brewmaster:add_potion_mix"
+}

@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:strength",
+    "ingredient": "minecraft:redstone",
+    "output_potion": "minecraft:long_strength"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

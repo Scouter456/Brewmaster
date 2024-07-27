@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:awkward",
+  "ingredient": {
+    "item": "minecraft:rabbit_foot"
+  },
+  "output_potion": "minecraft:leaping",
+  "type": "brewmaster:add_potion_mix"
+}

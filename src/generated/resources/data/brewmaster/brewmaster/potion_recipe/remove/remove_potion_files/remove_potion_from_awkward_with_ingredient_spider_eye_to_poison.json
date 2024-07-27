@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:spider_eye",
+    "output_potion": "minecraft:poison"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

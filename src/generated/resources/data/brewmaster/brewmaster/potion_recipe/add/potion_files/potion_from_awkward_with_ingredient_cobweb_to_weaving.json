@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:awkward",
+  "ingredient": {
+    "item": "minecraft:cobweb"
+  },
+  "output_potion": "minecraft:weaving",
+  "type": "brewmaster:add_potion_mix"
+}

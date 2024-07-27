@@ -4,7 +4,9 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
+import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class ReplaceContainerRecipe implements PotionBrewingRecipe {
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
     public static final MapCodec<ReplaceContainerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -98,7 +100,7 @@ public class ReplaceContainerRecipe implements PotionBrewingRecipe {
         }
 
         if (!foundRecipe) {
-            LOGGER.warn("Brewmaster: replace_container did not find old container with {}", item);
+            LOGGER.logWarning(" replace_container did not find old container with {}", item);
         }
 
         return List.of();

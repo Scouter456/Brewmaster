@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:turtle_master",
+  "ingredient": {
+    "item": "minecraft:redstone"
+  },
+  "output_potion": "minecraft:long_turtle_master",
+  "type": "brewmaster:add_potion_mix"
+}

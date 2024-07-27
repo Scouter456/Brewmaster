@@ -3,7 +3,9 @@ package com.scouter.brewmaster.data;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
+import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class RemoveContainerMixRecipe implements PotionBrewingRecipe {
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final CustomLogger LOGGER = new CustomLogger(Brewmaster.MODID);
 
     public static final MapCodec<RemoveContainerMixRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -76,7 +78,7 @@ public class RemoveContainerMixRecipe implements PotionBrewingRecipe {
         }
 
         if (!foundRecipe) {
-            LOGGER.warn("Brewmaster: remove_potion_mix did not find old recipe with input {}, ingredient {}, result {}", oldRecipe.input(), oldRecipe.ingredient(), oldRecipe.result());
+            LOGGER.logWarning("remove_container_mix did not find old recipe with input {}, ingredient {}, result {}", oldRecipe.input().getRegisteredName(), oldRecipe.ingredient(), oldRecipe.result().getRegisteredName());
         }
     }
 

@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:awkward",
+    "ingredient": "minecraft:slime_block",
+    "output_potion": "minecraft:oozing"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}

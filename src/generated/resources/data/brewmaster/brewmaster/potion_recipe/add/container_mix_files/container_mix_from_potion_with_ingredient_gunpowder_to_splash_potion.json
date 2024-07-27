@@ -1,0 +1,8 @@
+{
+  "input_potion": "minecraft:potion",
+  "ingredient": {
+    "item": "minecraft:gunpowder"
+  },
+  "output_potion": "minecraft:splash_potion",
+  "type": "brewmaster:add_container_mix"
+}

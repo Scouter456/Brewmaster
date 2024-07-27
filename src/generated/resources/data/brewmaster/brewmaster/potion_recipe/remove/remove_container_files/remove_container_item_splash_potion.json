@@ -1,0 +1,6 @@
+{
+  "container": {
+    "item": "minecraft:splash_potion"
+  },
+  "type": "brewmaster:remove_container"
+}

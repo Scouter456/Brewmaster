@@ -1,0 +1,8 @@
+{
+  "recipe_to_remove": {
+    "input_potion": "minecraft:slowness",
+    "ingredient": "minecraft:glowstone_dust",
+    "output_potion": "minecraft:strong_slowness"
+  },
+  "type": "brewmaster:remove_potion_mix"
+}
