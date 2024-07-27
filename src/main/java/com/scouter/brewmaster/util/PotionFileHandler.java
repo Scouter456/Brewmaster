@@ -134,9 +134,6 @@ public class PotionFileHandler {
 
             for (PotionBrewing.Mix<Potion> potionMix : potionMixes) {
                 if(potionMix.ingredient.getItems().length ==0) {
-                    ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
-                    ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
-                    LOGGER.error("WTF is this {} ingredient, {} from potion to {} ", potionMix.ingredient, keyFrom, keyTo);
                     continue;
                 }
 
@@ -173,6 +170,9 @@ public class PotionFileHandler {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
             for (Ingredient container : containers) {
+                if(container.getItems().length ==0) {
+                    continue;
+                }
                 Item item = container.getItems()[0].getItem();
                 ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
                 String fileName = fileNameGenerator.generateFileName(container,key);

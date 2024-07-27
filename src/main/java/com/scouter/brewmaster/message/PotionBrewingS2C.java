@@ -61,9 +61,6 @@ public class PotionBrewingS2C {
     }
 
     private void handlePacketOnMainThread() {
-        Level level = ClientUtils.getLevel();
-        ClientLevel clientLevel = (ClientLevel) level;
-        if (level == null || clientLevel == null) return;
 
         List<PotionBrewing.Mix<Potion>> pMix = new ArrayList<>();
         List<PotionBrewing.Mix<Item>> iMix = new ArrayList<>();

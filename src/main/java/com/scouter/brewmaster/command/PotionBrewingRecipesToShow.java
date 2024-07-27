@@ -19,29 +19,31 @@ import java.util.stream.Stream;
 public class PotionBrewingRecipesToShow {
 
 
-    public static final List<Holder<Potion>> holders = new ArrayList<>();
-    public static Map<Holder<Potion>,List<PotionBrewing.Mix<Potion>>> potions = new HashMap<>();
+    public static final List<Potion> holders = new ArrayList<>();
+    public static Map<Potion,List<PotionBrewing.Mix<Potion>>> potions = new HashMap<>();
 
     public static void setPotions(List<PotionBrewing.Mix<Potion>> potionsList) {
+        potions.clear();
+        holders.clear();
         for(PotionBrewing.Mix<Potion> mix : potionsList) {
-            holders.add(mix.to);
-            List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to, potionHolder -> new ArrayList<>());
+            holders.add(mix.to.get());
+            List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to.get(), potionHolder -> new ArrayList<>());
             mixes.add(mix);
-            potions.put(mix.to, mixes);
+            potions.put(mix.to.get(), mixes);
         }
     }
 
     public static Stream<String> getRegisteredPotions() {
-        return holders.stream().map(potionHolder -> getName(potionHolder));
+        return holders.stream().map(PotionBrewingRecipesToShow::getName);
     }
 
-    private static List<PotionBrewing.Mix<Potion>> getMixesList(Holder<Potion> potionHolder) {
+    private static List<PotionBrewing.Mix<Potion>> getMixesList(Potion potionHolder) {
         return potions.getOrDefault(potionHolder, Collections.emptyList());
     }
 
 
 
-    public static void printMessageForPotion(ServerPlayer player, Holder<Potion> potionHolder) {
+    public static void printMessageForPotion(ServerPlayer player, Potion potionHolder) {
         player.sendSystemMessage(Component.literal("Mix(es) for " + getName(potionHolder)));
         AtomicInteger integer = new AtomicInteger(1);
         for(PotionBrewing.Mix<Potion> mix : getMixesList(potionHolder)) {
@@ -53,9 +55,8 @@ public class PotionBrewingRecipesToShow {
     private static Component formatPotionMessage(PotionBrewing.Mix<Potion> potionMix, AtomicInteger integer) {
         // Extract potion names
 
-
-        String potionInput = getName(potionMix.from);
-        String potionOutput = getName(potionMix.to);
+        String potionInput = getName(potionMix.from.get());
+        String potionOutput = getName(potionMix.to.get());
 
         // Extract ingredients
         ItemStack[] ingredients = potionMix.ingredient.getItems();
@@ -88,7 +89,7 @@ public class PotionBrewingRecipesToShow {
         return formattedMessage;
     }
 
-    public static String getName(Holder<Potion> potionHolder) {
-        return BuiltInRegistries.POTION.getKey(potionHolder.get()).toString();
+    public static String getName(Potion potionHolder) {
+        return BuiltInRegistries.POTION.getKey(potionHolder).toString();
     }
 }

@@ -76,16 +76,10 @@ public class BrewCommand {
         Entity nullableSummoner = c.getSource().getEntity();
         ServerLevel level = c.getSource().getLevel();
         Path PATH = FMLPaths.GAMEDIR.get().resolve("brewmaster/potion_files");
-        ResourceKey key = ResourceKey.create(Registries.POTION, location);
-        Optional<Holder.Reference<Potion>> reference = BuiltInRegistries.POTION.getHolder(key);
+        //ResourceKey key = ResourceKey.create(Registries.POTION, location);
+        Potion reference = BuiltInRegistries.POTION.get(location);
         if(nullableSummoner instanceof ServerPlayer player) {
-            if (!reference.isPresent()) {
-                player.sendSystemMessage(Component.literal("Potion not available!").withStyle(ChatFormatting.RED));
-                return 0;
-            } else {
-                Holder<Potion> potionHolder = reference.get();
-                PotionBrewingRecipesToShow.printMessageForPotion(player, potionHolder);
-            }
+                PotionBrewingRecipesToShow.printMessageForPotion(player, reference);
         }
         return 0;
     }
