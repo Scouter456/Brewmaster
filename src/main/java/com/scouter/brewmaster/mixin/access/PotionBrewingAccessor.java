@@ -21,5 +21,4 @@ public interface PotionBrewingAccessor {
 
     @Accessor("containers")
     List<Ingredient> brewmaster$getContainers();
-
 }

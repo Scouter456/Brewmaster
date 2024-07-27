@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "brewmaster",
+	"version": "${version}",
+	"name": "brewmaster",
+	"description": "This mod adds a way to change potion recipes and adding new ones using a datapack",
+	"authors": [
+		"Scouter456"
+	],
+	"contact": {
+		"homepage": "https://github.com/Scouter456/Brewmaster",
+		"sources": "https://github.com/Scouter456/Brewmaster"
+	},
+	"license": "MIT",
+	"icon": "assets/brewmaster/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+          "com.scouter.brewmaster.Brewmaster"
+		],
+		"client": [
+			"com.scouter.brewmaster.setup.ClientSetup"
+		]
+	},
+	"mixins": [
+		"brewmaster.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

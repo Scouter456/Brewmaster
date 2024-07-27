@@ -113,7 +113,7 @@ public class AddContainerMixRecipe implements PotionBrewingRecipe{
 
     @Override
     public PotionBrewingRecipeType<? extends PotionBrewingRecipe> type() {
-        return BMPotionRecipeRegistry.ADD_CONTAINER_MIX.get();
+        return BMPotionRecipeRegistry.ADD_CONTAINER_MIX;
     }
 
     public Either<Item, TagKey<Item>> getEither() {

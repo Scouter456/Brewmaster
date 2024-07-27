@@ -39,6 +39,6 @@ public record OldRecipe(Holder<Potion> input, Item ingredient, Holder<Potion> re
     }
 
     public final PotionBrewing.Mix<Potion> toMix() {
-        return new PotionBrewing.Mix<>(input, Ingredient.of(ingredient), result);
+        return new PotionBrewing.Mix<Potion>(input, Ingredient.of(ingredient), result);
     }
 }

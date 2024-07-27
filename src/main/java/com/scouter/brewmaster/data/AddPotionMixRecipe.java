@@ -121,7 +121,7 @@ public class AddPotionMixRecipe implements PotionBrewingRecipe {
 
     @Override
     public PotionBrewingRecipeType<? extends PotionBrewingRecipe> type() {
-        return BMPotionRecipeRegistry.ADD_POTION_MIX.get();
+        return BMPotionRecipeRegistry.ADD_POTION_MIX;
     }
 
     public Holder<Potion> getInput() {

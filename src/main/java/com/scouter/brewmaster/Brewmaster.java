@@ -1,51 +1,42 @@
 package com.scouter.brewmaster;
 
-import com.mojang.logging.LogUtils;
 import com.scouter.brewmaster.command.BrewCommand;
-import com.scouter.brewmaster.data.PotionBrewingRecipe;
-import com.scouter.brewmaster.registry.BMRegistries;
-import com.scouter.brewmaster.setup.ModSetup;
+import com.scouter.brewmaster.data.BrewmasterJsonManager;
+import com.scouter.brewmaster.events.FabricEvents;
+import com.scouter.brewmaster.message.PotionBrewingS2C;
 import com.scouter.brewmaster.setup.Registration;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(Brewmaster.MODID)
-public class Brewmaster
-{
-    // Define mod id in a common place for everything to reference
-    public static final String MODID = "brewmaster";
-    // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+public class Brewmaster implements ModInitializer {
+	// This logger is used to write text to the console and the log file.
+	// It is considered best practice to use your mod id as the logger's name.
+	// That way, it's clear which mod wrote info, warnings, and errors.
+    public static final Logger LOGGER = LoggerFactory.getLogger("brewmaster");
+	public static final String MODID = "brewmaster";
 
-    public Brewmaster(IEventBus modEventBus, ModContainer modContainer)
-    {
+	@Override
+	public void onInitialize() {
+		PayloadTypeRegistry.playS2C().register(PotionBrewingS2C.TYPE, PotionBrewingS2C.STREAM_CODEC);
+		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BrewmasterJsonManager());
+		CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> BrewCommand.register(commandDispatcher));
 
-        Registration.init();
-        ModSetup.setup();
-        IEventBus forgeBus = NeoForge.EVENT_BUS;
-        IEventBus modbus = ModLoadingContext.get().getActiveContainer().getEventBus();
-        NeoForge.EVENT_BUS.addListener(this::commands);
-        modbus.addListener(ModSetup::init);
-        modbus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-            event.dataPackRegistry(BMRegistries.Keys.POTION_RECIPE, PotionBrewingRecipe.DIRECT_CODEC, PotionBrewingRecipe.DIRECT_CODEC);
-        });
-    }
+		Registration.init();
+		FabricEvents.onServerStart();
+		FabricEvents.endDataReload();
+		FabricEvents.onDataSynch();
 
-    public static ResourceLocation prefix(String name) {
-        return  ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
-    }
+	}
 
-    public void commands(RegisterCommandsEvent e) {
-        BrewCommand.register(e.getDispatcher());
-    }
+	public static ResourceLocation prefix(String name) {
+		return ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
+	}
 }

@@ -2,16 +2,19 @@ package com.scouter.brewmaster.registry;
 
 import com.scouter.brewmaster.data.PotionBrewingRecipe;
 import com.scouter.brewmaster.data.PotionBrewingRecipeType;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import static com.scouter.brewmaster.Brewmaster.prefix;
 
 public class BMRegistries {
     static { init(); }
-    public static final Registry<PotionBrewingRecipeType<?>> POTION_BREWING_RECIPE_TYPE = new RegistryBuilder<>(Keys.POTION_RECIPE_TYPE_SERIALIZER).maxId(Integer.MAX_VALUE - 1).sync(true).create();
+    public static final Registry<PotionBrewingRecipeType<?>> POTION_BREWING_RECIPE_TYPE = FabricRegistryBuilder.createSimple(Keys.POTION_RECIPE_TYPE_SERIALIZER)
+            .attribute(RegistryAttribute.SYNCED)
+             .buildAndRegister();
 
 
     public static final class Keys {
@@ -26,7 +29,7 @@ public class BMRegistries {
 
     }
 
-    private static void init()
+    public static void init()
     {
         Keys.init();
     }

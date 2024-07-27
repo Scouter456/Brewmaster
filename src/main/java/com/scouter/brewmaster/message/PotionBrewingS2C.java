@@ -1,11 +1,10 @@
 package com.scouter.brewmaster.message;
 
 import com.scouter.brewmaster.Brewmaster;
-import com.scouter.brewmaster.data.OldContainerRecipe;
-import com.scouter.brewmaster.data.OldRecipe;
 import com.scouter.brewmaster.events.PotionBrewingRecipeExtension;
 import com.scouter.brewmaster.util.ClientUtils;
 import com.scouter.brewmaster.util.PotionUtil;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -17,14 +16,12 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PotionBrewingS2C implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<PotionBrewingS2C> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Brewmaster.MODID, "potion_brewing_s2c"));
+    public static final Type<PotionBrewingS2C> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Brewmaster.MODID, "potion_brewing_s2c"));
 
     private final List<PotionBrewing.Mix<Potion>> potionMixes;
 
@@ -57,8 +54,8 @@ public class PotionBrewingS2C implements CustomPacketPayload {
         return containers;
     }
 
-    public void onPacketReceived(IPayloadContext contextGetter) {
-        contextGetter.enqueueWork(this::handlePacketOnMainThread);
+    public void onPacketReceived(ClientPlayNetworking.Context contextGetter) {
+        handlePacketOnMainThread();
     }
 
     private void handlePacketOnMainThread() {

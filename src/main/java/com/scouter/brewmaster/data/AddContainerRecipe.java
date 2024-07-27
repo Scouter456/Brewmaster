@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -115,7 +114,7 @@ public class AddContainerRecipe implements PotionBrewingRecipe{
 
     @Override
     public PotionBrewingRecipeType<? extends PotionBrewingRecipe> type() {
-        return BMPotionRecipeRegistry.ADD_CONTAINER.get();
+        return BMPotionRecipeRegistry.ADD_CONTAINER;
     }
 
     public Either<Item, TagKey<Item>> getEither() {

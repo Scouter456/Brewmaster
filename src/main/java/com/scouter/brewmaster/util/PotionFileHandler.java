@@ -9,6 +9,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.scouter.brewmaster.data.*;
 import com.scouter.brewmaster.mixin.access.PotionBrewingAccessor;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,11 +19,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.fml.loading.FMLPaths;
 import org.slf4j.Logger;
 
 import java.io.FileWriter;
@@ -126,7 +125,7 @@ public class PotionFileHandler {
         AtomicInteger updatedFileCount = new AtomicInteger(0);
         Entity nullableSummoner = context.getSource().getEntity();
         ServerLevel level = context.getSource().getLevel();
-        Path path = FMLPaths.GAMEDIR.get().resolve(directoryPath);
+        Path path = FabricLoader.getInstance().getGameDir().resolve(directoryPath);
 
         try {
             List<PotionBrewing.Mix<Potion>> potionMixes = ((PotionBrewingAccessor) level.potionBrewing()).brewmaster$getPotionMixes();
@@ -159,7 +158,7 @@ public class PotionFileHandler {
         AtomicInteger updatedFileCount = new AtomicInteger(0);
         Entity nullableSummoner = context.getSource().getEntity();
         ServerLevel level = context.getSource().getLevel();
-        Path path = FMLPaths.GAMEDIR.get().resolve(directoryPath);
+        Path path = FabricLoader.getInstance().getGameDir().resolve(directoryPath);
 
         try {
             List<Ingredient> containers = ((PotionBrewingAccessor) level.potionBrewing()).brewmaster$getContainers();
@@ -193,7 +192,7 @@ public class PotionFileHandler {
         AtomicInteger updatedFileCount = new AtomicInteger(0);
         Entity nullableSummoner = context.getSource().getEntity();
         ServerLevel level = context.getSource().getLevel();
-        Path path = FMLPaths.GAMEDIR.get().resolve(directoryPath);
+        Path path = FabricLoader.getInstance().getGameDir().resolve(directoryPath);
 
         try {
             List<PotionBrewing.Mix<Item>> containers = ((PotionBrewingAccessor) level.potionBrewing()).brewmaster$getMixes();

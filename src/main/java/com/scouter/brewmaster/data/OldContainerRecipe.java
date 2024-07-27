@@ -8,7 +8,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -39,6 +38,6 @@ public record OldContainerRecipe(Holder<Item> input, Item ingredient, Holder<Ite
     }
 
     public final PotionBrewing.Mix<Item> toMix() {
-        return new PotionBrewing.Mix<>(input, Ingredient.of(ingredient), result);
+        return new PotionBrewing.Mix<Item>(input, Ingredient.of(ingredient), result);
     }
 }

@@ -87,7 +87,8 @@ public class AddPotionStartMixRecipe implements PotionBrewingRecipe {
         PotionBrewing.Mix<Potion> mix;
         PotionBrewing.Mix<Potion> mix2;
         if (item == null) {
-            mix = new PotionBrewing.Mix<Potion>(Potions.WATER, Ingredient.of(itemTagKey), Potions.MUNDANE);
+
+            mix =  new PotionBrewing.Mix<Potion>(Potions.WATER, Ingredient.of(itemTagKey), Potions.MUNDANE);
             mix2 = new PotionBrewing.Mix<Potion>(Potions.AWKWARD, Ingredient.of(itemTagKey), result);
 
         } else {
@@ -121,7 +122,7 @@ public class AddPotionStartMixRecipe implements PotionBrewingRecipe {
 
     @Override
     public PotionBrewingRecipeType<? extends PotionBrewingRecipe> type() {
-        return BMPotionRecipeRegistry.ADD_POTION_START_MIX.get();
+        return BMPotionRecipeRegistry.ADD_POTION_START_MIX;
     }
 
 
