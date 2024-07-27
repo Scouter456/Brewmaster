@@ -22,6 +22,8 @@ public class PotionBrewingRecipesToShow {
     public static Map<Holder<Potion>,List<PotionBrewing.Mix<Potion>>> potions = new HashMap<>();
 
     public static void setPotions(List<PotionBrewing.Mix<Potion>> potionsList) {
+        potions.clear();
+        holders.clear();
         for(PotionBrewing.Mix<Potion> mix : potionsList) {
             holders.add(mix.to());
             List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to(), potionHolder -> new ArrayList<>());

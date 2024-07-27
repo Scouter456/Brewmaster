@@ -23,11 +23,11 @@ public class AddContainerMixRecipe implements PotionBrewingRecipe{
 
     public static final MapCodec<AddContainerMixRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("input_potion").forGetter(AddContainerMixRecipe::getInput),
+                    BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("input_item").forGetter(AddContainerMixRecipe::getInput),
                     Codec.either(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").codec(), TagKey.codec(Registries.ITEM).fieldOf("tag").codec()).fieldOf("ingredient").forGetter(predicate ->
                             predicate.item != null ? Either.left(predicate.item) : Either.right(predicate.itemTagKey)
                     ),
-                    BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("output_potion").forGetter(AddContainerMixRecipe::getResult)
+                    BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("output_item").forGetter(AddContainerMixRecipe::getResult)
             ).apply(instance, AddContainerMixRecipe::new)
     );
 
