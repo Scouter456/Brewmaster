@@ -4,7 +4,10 @@ import com.scouter.brewmaster.Brewmaster;
 import com.scouter.brewmaster.data.*;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -52,6 +55,15 @@ public class WikiPageGenerator extends WikiPageBuilderProvider {
         builder.addParagraph("This JSON checks for the items and potions defined in the recipe list and if it finds them it will replace it with the recipe defined.");
         builder.addParagraph("This is essentially a remove and add operation added together.");
         builder.addParagraph("The item `item` key can also be changed with `tag` to allow for tags to be used instead of a single item as ingredient");
+
+
+
+        AddPotionStartMixRecipe addPotionStartMixRecipe = new AddPotionStartMixRecipe(Items.ICE, Potions.SLOWNESS);
+        builder.addParagraph("Below is an example of what the JSON file should look like for adding a potion start mix:");
+        builder.addCodeBlock(encodeDataToJsonString(PotionBrewingRecipe.DIRECT_CODEC, addPotionStartMixRecipe));
+        builder.addParagraph("This JSON adds a base mix with a potion of water and awkward.");
+        builder.addParagraph("water -> mundane.");
+        builder.addParagraph("awkward -> result.");
 
         builder.endCollapsibleSection();
 
