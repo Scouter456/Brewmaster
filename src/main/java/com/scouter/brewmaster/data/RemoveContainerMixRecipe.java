@@ -3,6 +3,7 @@ package com.scouter.brewmaster.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.Brewmaster;
+import com.scouter.brewmaster.mixin.access.PotionBrewingMixAccessor;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
 import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.world.item.Item;
@@ -56,19 +57,22 @@ public class RemoveContainerMixRecipe implements PotionBrewingRecipe {
 
         while (iterator.hasNext()) {
             PotionBrewing.Mix<Item> potionMix = iterator.next();
-            if (potionMix.from.getDefaultInstance().is(oldRecipe.input()) &&
-                    potionMix.ingredient.test(oldRecipe.ingredient().getDefaultInstance()) &&
-                    potionMix.to.getDefaultInstance().is(oldRecipe.result())) {
+            boolean b1 =((PotionBrewingMixAccessor<Item>)potionMix).brewmaster$getFrom().getDefaultInstance().is(oldRecipe.input());
+            boolean b2 =((PotionBrewingMixAccessor<Item>)potionMix).brewmaster$getIngredient().test(oldRecipe.ingredient().getDefaultInstance()) ;
+            boolean b3 =((PotionBrewingMixAccessor<Item>)potionMix).brewmaster$getTo().getDefaultInstance().is(oldRecipe.result());
 
-                iterator.remove();  // Safely removes the element from the list
+            if (b1 && b2 && b3) {
+
+                iterator.remove();
                 foundRecipe = true;
                 break;
             }
-        }
 
+        }
         if (!foundRecipe) {
             LOGGER.logWarning("remove_container_mix did not find old recipe with input {}, ingredient {}, result {}", oldRecipe.getInputRL(), oldRecipe.ingredient(), oldRecipe.getResultRl());
         }
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.scouter.brewmaster.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.scouter.brewmaster.mixin.access.PotionBrewingMixAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -43,8 +44,8 @@ public record OldRecipe(Potion input, Item ingredient, Potion result){
     public static List<OldRecipe> fromList(List<PotionBrewing.Mix<Potion>> mixes) {
         List<OldRecipe> oldRecipes = new ArrayList<>();
         for(PotionBrewing.Mix<Potion> pot : mixes) {
-            if(pot.ingredient.getItems().length == 0) continue;
-            oldRecipes.add(new OldRecipe(pot.from, pot.ingredient.getItems()[0].getItem(), pot.to));
+            if(((PotionBrewingMixAccessor<Potion>)pot).brewmaster$getIngredient().getItems().length == 0) continue;
+            oldRecipes.add(new OldRecipe(((PotionBrewingMixAccessor<Potion>)pot).brewmaster$getFrom(), ((PotionBrewingMixAccessor<Potion>)pot).brewmaster$getIngredient().getItems()[0].getItem(), ((PotionBrewingMixAccessor<Potion>)pot).brewmaster$getTo()));
         }
         return oldRecipes;
     }

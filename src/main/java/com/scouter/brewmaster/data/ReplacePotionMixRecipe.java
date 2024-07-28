@@ -3,6 +3,7 @@ package com.scouter.brewmaster.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.scouter.brewmaster.Brewmaster;
+import com.scouter.brewmaster.mixin.access.PotionBrewingMixAccessor;
 import com.scouter.brewmaster.registry.BMPotionRecipeRegistry;
 import com.scouter.brewmaster.util.CustomLogger;
 import net.minecraft.world.item.Item;
@@ -55,9 +56,10 @@ public class ReplacePotionMixRecipe implements PotionBrewingRecipe {
 
         while (iterator.hasNext()) {
             PotionBrewing.Mix<Potion> potionMix = iterator.next();
-            if (potionMix.from == oldRecipe.input() &&
-                    potionMix.ingredient.test(oldRecipe.ingredient().getDefaultInstance()) &&
-                    potionMix.to == oldRecipe.result()) {
+            if (((PotionBrewingMixAccessor<Potion>)potionMix).brewmaster$getFrom() == oldRecipe.input() &&
+                    ((PotionBrewingMixAccessor<Potion>)potionMix).brewmaster$getIngredient().test(oldRecipe.ingredient().getDefaultInstance()) &&
+                    ((PotionBrewingMixAccessor<Potion>)potionMix).brewmaster$getTo() == oldRecipe.result()) {
+
 
                 iterator.remove();
                 addPotionMixRecipe.addPotionMixes(mixes);

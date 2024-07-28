@@ -1,5 +1,6 @@
 package com.scouter.brewmaster.command;
 
+import com.scouter.brewmaster.mixin.access.PotionBrewingMixAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -24,10 +25,10 @@ public class PotionBrewingRecipesToShow {
         potions.clear();
         holders.clear();
         for(PotionBrewing.Mix<Potion> mix : potionsList) {
-            holders.add(mix.to);
-            List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(mix.to, potionHolder -> new ArrayList<>());
+            holders.add(((PotionBrewingMixAccessor<Potion>)mix).brewmaster$getTo());
+            List<PotionBrewing.Mix<Potion>> mixes = potions.computeIfAbsent(((PotionBrewingMixAccessor<Potion>)mix).brewmaster$getTo(), potionHolder -> new ArrayList<>());
             mixes.add(mix);
-            potions.put(mix.to, mixes);
+            potions.put(((PotionBrewingMixAccessor<Potion>)mix).brewmaster$getTo(), mixes);
         }
     }
 
@@ -53,11 +54,11 @@ public class PotionBrewingRecipesToShow {
     private static Component formatPotionMessage(PotionBrewing.Mix<Potion> potionMix, AtomicInteger integer) {
         // Extract potion names
 
-        String potionInput = getName(potionMix.from);
-        String potionOutput = getName(potionMix.to);
+        String potionInput = getName(((PotionBrewingMixAccessor<Potion>)potionMix).brewmaster$getFrom());
+        String potionOutput = getName(((PotionBrewingMixAccessor<Potion>)potionMix).brewmaster$getTo());
 
         // Extract ingredients
-        ItemStack[] ingredients = potionMix.ingredient.getItems();
+        ItemStack[] ingredients = ((PotionBrewingMixAccessor<Potion>)potionMix).brewmaster$getIngredient().getItems();
 
         // Create colored components for each part
         MutableComponent formattedMessage = Component.literal("");

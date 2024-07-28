@@ -3,7 +3,8 @@
   "package": "com.scouter.brewmaster.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "access.PotionBrewingAccessor"
+    "access.PotionBrewingAccessor",
+    "access.PotionBrewingMixAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
