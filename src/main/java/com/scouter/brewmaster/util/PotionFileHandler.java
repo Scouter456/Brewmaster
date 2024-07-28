@@ -251,7 +251,7 @@ public class PotionFileHandler {
 
     private static String createPotionFileName(PotionBrewing.Mix<Potion> potionMix, ResourceLocation key) {
         ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
-        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.to.get());
 
         return String.format("potion_from_%s_with_ingredient_%s_to_%s.json",
                 keyFrom.getPath(),
@@ -261,7 +261,7 @@ public class PotionFileHandler {
 
     private static String removePotionFileName(PotionBrewing.Mix<Potion> potionMix, ResourceLocation key) {
         ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
-        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.to.get());
         return String.format("remove_potion_from_%s_with_ingredient_%s_to_%s.json",
                 keyFrom.getPath(),
                 key.getPath(),
@@ -270,7 +270,7 @@ public class PotionFileHandler {
 
     private static String replacePotionFileName(PotionBrewing.Mix<Potion> potionMix, ResourceLocation key) {
         ResourceLocation keyFrom = BuiltInRegistries.POTION.getKey(potionMix.from.get());
-        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.POTION.getKey(potionMix.to.get());
         return String.format("replace_potion_from_%s_with_ingredient_%s_to_%s.json",
                 keyFrom.getPath(),
                 key.getPath(),
@@ -294,7 +294,7 @@ public class PotionFileHandler {
 
     private static String createContainerMixFileName(PotionBrewing.Mix<Item> potionMix, ResourceLocation key) {
         ResourceLocation keyFrom = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
-        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.to.get());
         return String.format("container_mix_from_%s_with_ingredient_%s_to_%s.json",
                 keyFrom.getPath(),
                 key.getPath(),
@@ -303,7 +303,7 @@ public class PotionFileHandler {
 
     private static String removeContainerMixFileName(PotionBrewing.Mix<Item> potionMix, ResourceLocation key) {
         ResourceLocation keyFrom = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
-        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.to.get());
         return String.format("remove_container_mix_from_%s_with_ingredient_%s_to_%s.json",
                 keyFrom.getPath(),
                 key.getPath(),
@@ -312,7 +312,7 @@ public class PotionFileHandler {
 
     private static String replaceContainerMixFileName(PotionBrewing.Mix<Item> potionMix, ResourceLocation key) {
         ResourceLocation keyFrom = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
-        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.from.get());
+        ResourceLocation keyTo = BuiltInRegistries.ITEM.getKey(potionMix.to.get());
         return String.format("remove_container_mix_from_%s_with_ingredient_%s_to_%s.json",
                 keyFrom.getPath(),
                 key.getPath(),
